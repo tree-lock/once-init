@@ -1,0 +1,16 @@
+{
+  "include": ["src/**/*", "test/**/*"],
+  "compilerOptions": {
+    // "target": "es2015",
+    // "module": "es2015",
+    "lib": ["es2015", "dom"],
+    "module": "es6",
+    "target": "es5",
+    "outDir": "dist",
+    "moduleResolution": "node",
+    "sourceMap": true,
+    "esModuleInterop": true,
+    "declaration": true,
+    "allowJs": true
+  }
+}

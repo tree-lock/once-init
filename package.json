@@ -1,0 +1,52 @@
+{
+  "name": "once-init",
+  "version": "0.4.0",
+  "description": "Init a target by promise only once.",
+  "main": "dist/index.js",
+  "repository": "git@github.com:darkXmo/once-init.git",
+  "author": "Xmo <18851989097@163.com>",
+  "keywords": [
+    "font-end",
+    "xmon",
+    "xmo"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "mitt": "^3.0.0"
+  },
+  "devDependencies": {
+    "@babel/preset-env": "^7.15.6",
+    "@babel/preset-typescript": "^7.15.0",
+    "@commitlint/cli": "^13.1.0",
+    "@commitlint/config-conventional": "^13.1.0",
+    "cz-conventional-changelog": "^3.3.0",
+    "git-cz": "^4.8.0",
+    "husky": "^7.0.0",
+    "lint-staged": "^11.1.2",
+    "prettier": "2.4.1",
+    "typescript": "^4.4.3"
+  },
+  "lint-staged": {
+    "src/**/*.vue": [
+      "prettier --write --ignore-unknown"
+    ],
+    "src/**/*.js": [
+      "prettier --write --ignore-unknown"
+    ],
+    "src/**/*.ts": [
+      "prettier --write --ignore-unknown"
+    ],
+    "*.{js,ts,css,md}": "prettier --write --ignore-unknown"
+  },
+  "scripts": {
+    "commit": "git add . && git status && git-cz",
+    "prepare": "husky install",
+    "build": "yarn tsc",
+    "clean": "rm -rf dist pnpm* yarn.* node_modules package-*"
+  },
+  "config": {
+    "commitizen": {
+      "path": "node_modules/cz-conventional-changelog"
+    }
+  }
+}
