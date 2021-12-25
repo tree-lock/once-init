@@ -2,7 +2,6 @@
   "name": "once-init",
   "version": "0.4.0",
   "description": "Init a target by promise only once.",
-  "main": "dist/index.js",
   "repository": "git@github.com:darkXmo/once-init.git",
   "author": "Xmo <18851989097@163.com>",
   "keywords": [
@@ -10,9 +9,13 @@
     "xmon",
     "xmo"
   ],
+  "homepage": "https://github.com/darkXmo/once-init",
   "license": "MIT",
   "dependencies": {
-    "mitt": "^3.0.0"
+    "@babel/core": "^7.0.0-0",
+    "microbundle": "^0.14.2",
+    "mitt": "^3.0.0",
+    "rimraf": "^3.0.2"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.15.6",
@@ -38,10 +41,26 @@
     ],
     "*.{js,ts,css,md}": "prettier --write --ignore-unknown"
   },
+  "module": "dist/once-init.mjs",
+  "main": "dist/once-init.js",
+  "jsnext:main": "dist/once-init.mjs",
+  "umd:main": "dist/once-init.umd.js",
+  "source": "src/index.ts",
+  "typings": "index.d.ts",
+  "exports": {
+    "import": "./dist/once-init.mjs",
+    "require": "./dist/once-init.js",
+    "default": "./dist/once-init.mjs"
+  },
+  "files": [
+    "dist",
+    "index.d.ts"
+  ],
   "scripts": {
     "commit": "git add . && git status && git-cz",
     "prepare": "husky install",
-    "build": "yarn tsc",
+    "bundle": "microbundle -f es,cjs,umd",
+    "build": "rimraf dist && npm run bundle",
     "clean": "rm -rf dist pnpm* yarn.* node_modules package-*"
   },
   "config": {
