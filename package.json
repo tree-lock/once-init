@@ -64,7 +64,7 @@
     "bundle": "microbundle -f es,cjs,umd",
     "build": "rimraf dist && npm run bundle",
     "clean": "rm -rf dist pnpm* yarn.* node_modules package-*",
-    "publish": "npm run bundle && npm config set registry https://registry.npmmirror.com && npm publish"
+    "bp": "npm run bundle && npm config set registry https://registry.npmmirror.com && npm publish"
   },
   "config": {
     "commitizen": {
