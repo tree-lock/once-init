@@ -1,12 +1,14 @@
 # once-init
 
+[![npm license](https://img.shields.io/npm/l/once-init.svg?sanitize=true)](https://github.com/darkXmo/once-init/blob/main/LICENSE) [![npm version](https://img.shields.io/npm/v/once-init.svg?sanitize=true)](https://www.npmjs.com/package/once-init)
+
 Init Once, Use Everywhere.
 
-只会被初始化一次的对象.
+只会被初始化一次的对象。
 
-> 第一次调用对象的时候会执行 Promise 初始化. 重复调用, 初始化将不会再次执行.
+> 第一次调用对象的时候会执行 Promise 初始化，重复调用, 初始化将不会再次执行。
 
-> 同一个 Promise 不会在同一时间内被执行两次.
+> 同一个 Promise 不会在同一时间内被执行两次。
 
 ## 示例
 
@@ -45,7 +47,7 @@ numberInstance.init().then(() => {
 
 ### `initPromise`
 
-必须实现 `initPromise` , 它要求返回一个 `Promise` ，这个 `Promise` 的返回值将作为初始化和刷新的实例的值。
+必须实现 `initPromise` ，它要求返回一个 `Promise` ，这个 `Promise` 的返回值将作为初始化和刷新的实例的值。
 
 ```typescript
 class SomeInstance extends OnceInit<number> {
@@ -396,7 +398,7 @@ export abstract class RefOnceInit<T, G = T> extends OnceInit<
 
 这样 `RefOnceInit` 就是一个响应式的对象。
 
-具体可以参照另一个库 `RefOnceInit`;
+具体可以参照另一个库 `RefOnceInit`; (还没写)
 
 ## TODO
 
