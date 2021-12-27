@@ -1,15 +1,15 @@
 import mitt from "mitt";
 
-export abstract class RawOnceInit<T, G = T> {
+export abstract class OnceInit<T, G = T> {
   private observe: T | undefined;
-  promise: Promise<G> | null = null;
+  private promise: Promise<G> | null = null;
   constructor(defaultValue?: T) {
-    if (defaultValue) {
-      this.observe = defaultValue;
-    }
+    this.observe = defaultValue;
   }
   protected abstract initPromise(): Promise<G>;
-  protected abstract factory(raw: G, observe: T | undefined): void;
+  protected factory(raw: G, observe: T | undefined): void | T {
+    return (observe = raw as unknown as T);
+  }
   private initialized: boolean = false;
   private emitter = mitt<{
     loading: boolean;
@@ -31,15 +31,23 @@ export abstract class RawOnceInit<T, G = T> {
     return this.target;
   }
 
-  refresh = async () => {
+  refresh = async (): Promise<T | void> => {
     /** 如果没有在刷新, 则进行刷新 */
     if (!this.promise) {
       this.promise = this.initPromise();
       this.emitter.emit("loading", true);
-      this.factory(await this.promise, this.observe);
+      const ans = this.factory(await this.promise, this.observe);
+      if (ans) {
+        this.observe = ans;
+      }
       this.promise = null;
       this.initialized = true;
       this.emitter.emit("loading", false);
+      return this.observe;
+    } else {
+      return this.promise.then((res) => {
+        return this.observe;
+      });
     }
   };
 
