@@ -1,5 +1,55 @@
 import mitt from "mitt";
 
+export default function oi<T>(promise: Promise<T>): OnceInit<T>;
+export default function oi<T>(
+  promise: Promise<T>,
+  defaultValue: T
+): OnceInit<T>;
+export default function oi<T, G = T>(
+  promise: Promise<G>,
+  factory: (raw: G, observe: T | undefined) => void | T,
+  defaultValue?: T
+): OnceInit<T, G>;
+
+export default function oi<T, G = T>(...args: any[]): OnceInit<T, G> {
+  if (!(args[0] instanceof Promise) || args.length > 3 || args.length < 1) {
+    throw new Error("Arguments of oi is not supported");
+  }
+  const promise: Promise<G> = args[0];
+  if (args.length === 1) {
+    return new (class extends OnceInit<T, G> {
+      protected initPromise(): Promise<G> {
+        return promise;
+      }
+    })();
+  } else if (args.length === 2) {
+    if (args[1] instanceof Function) {
+      const factory: (raw: G, observe: T | undefined) => void | T = args[1];
+      return new (class extends OnceInit<T, G> {
+        protected initPromise(): Promise<G> {
+          return promise;
+        }
+        protected factory = factory;
+      })();
+    } else {
+      const defaultValue: T = args[1];
+      return new (class extends OnceInit<T, G> {
+        protected initPromise(): Promise<G> {
+          return promise;
+        }
+      })(defaultValue);
+    }
+  }
+  const factory: (raw: G, observe: T | undefined) => void | T = args[1];
+  const defaultValue: T = args[2];
+  return new (class extends OnceInit<T, G> {
+    protected initPromise(): Promise<G> {
+      return promise;
+    }
+    protected factory = factory;
+  })(defaultValue);
+}
+
 export abstract class OnceInit<T, G = T> {
   private observe: T | undefined;
   private promise: Promise<G> | null = null;

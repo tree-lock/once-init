@@ -4,11 +4,11 @@
 
 Init Once, Use Everywhere.
 
-Let Promise only be initialized once.
+只会被初始化一次的对象。
 
-> The Promise will be executed when the attribute `target` is called for the first time, and the _Promise executed_ will not be executed again when called repeatedly.
+> 第一次调用对象的时候会执行 Promise 初始化，重复调用, 初始化将不会再次执行。
 
-> The same Promise will not be executed twice at the same time. Only the first one will be executed, while the rest can still get the result of the promise after executed.
+> 同一个 Promise 不会在同一时间内被执行两次。
 
 ## 示例
 
