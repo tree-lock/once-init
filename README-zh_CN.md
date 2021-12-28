@@ -211,7 +211,7 @@ await functionB(); // 'B', [Promise Retrun Value] 888
 
 ### factory
 
-有时候，`Promise` 的返回值并不一定是你期望的返回值，你希望将这个返回值二次加工一下。
+如果 `Promise` 的返回值不是是你期望的返回值，你可以传入 `factory` 参数返回值加工它。
 
 例如，`api` 传递过来的数据是一个时间戳，而你希望获得的是一个 `Date` 对象。
 
@@ -220,9 +220,80 @@ const ans = await oiInstance.init(); // [Timestamp] 1640673370941
 const wishAns = new Date(ans);
 ```
 
-你可以再封装一层，或者，你可以传入一个 `factory` 函数作为参数，
+你可以再封装一层，或者，你可以传入一个 `factory` 函数作为参数，让 `Promise Function` 在执行 `Promise` 完成之后，自动加工为新的值。
 
-你还可以使用继承抽象类的方式，来使用 `once-init` 。如果使用 `Typescript` ，则还需要定义示例的值的类型。
+```typescript
+const factory = (raw: number) => new Date(raw);
+const oiInstance = oi(requestTimeStamp, factory);
+
+const ans = await oiInstance.init(); // [Promise Return Value] Date
+```
+
+你仍然可以传入默认值，作为第三个参数，但它的类型应当是 `factory` 的返回值的类型。
+
+```typescript
+const oiInstance = oi(requestTimeStamp, factory, new Date());
+```
+
+如果 `Promise` 的返回值只是某个对象的一部分，你还可以用 `factory` 的第二个参数来进行修改。
+
+```typescript
+interface I {
+  ...;
+  a: number;
+};
+const defaultValue = {
+  ...
+  a: -1
+};
+
+const factory = (raw: number, observe: I) => {
+  observe.a = raw;
+}
+
+const oiInstance = oi(requestNumber, factory, defaultValue);
+await oiInstance.init(); // { ..., a: 777 }
+defaultValue; // { ..., a: 777 }
+```
+
+> 如果你不传入默认值，则 `observe ` 的类型会被视为 `I | undefined` ，此时需要进行 `observe` 的类型判断才能修改 `observe`；
+
+### onLoading
+
+当某一次 `Promise` 开始执行和结束执行的时候，会触发 `onLoading` 事件。
+
+```typescript
+oiInstance.onLoading((event: boolean) => {
+  if (event === "true") {
+    console.log("promise function start");
+  } else {
+    console.log("promise function done");
+  }
+});
+
+await oiInstance.init(); // promise function start
+/** after promise done */
+// promise function done
+```
+
+```typescript
+/** only one console log will be output */
+oiInstance.init(); // promise function start
+oiInstance.init();
+oiInstance.init();
+oiInstance.init();
+oiInstance.init();
+/** after promise done */
+// promise function done;
+```
+
+### OnceInit
+
+你还可以使用继承抽象类的方式，来实现底层的 `once-init` 。如果使用 `Typescript` ，则还需要定义实例的值的类型。
+
+> 以下是尚未更新的历史文档
+
+---
 
 > 例如，此处定义类型为 `number` 。
 
