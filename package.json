@@ -1,6 +1,6 @@
 {
   "name": "once-init",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "description": "Init a target by promise only once.",
   "repository": "git@github.com:darkXmo/once-init.git",
   "author": "Xmo <18851989097@163.com>",
@@ -63,8 +63,7 @@
     "prepare": "husky install",
     "bundle": "microbundle -f es,cjs,umd",
     "build": "rimraf dist && npm run bundle",
-    "clean": "rm -rf dist pnpm* yarn.* node_modules package-*",
-    "bp": "npm run bundle && npm config set registry https://registry.npmmirror.com && npm publish"
+    "clean": "rm -rf dist pnpm* yarn.* node_modules package-*"
   },
   "config": {
     "commitizen": {
