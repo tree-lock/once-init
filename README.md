@@ -399,7 +399,3 @@ export abstract class RefOnceInit<T, G = T> extends OnceInit<
 这样 `RefOnceInit` 就是一个响应式的对象。
 
 具体可以参照另一个库 `RefOnceInit`; (还没写)
-
-## TODO
-
-1. 提供一个 `oi` 的 `api`，不需要传入类型。
