@@ -10,7 +10,7 @@ Let Promise only be initialized once.
 
 > The same Promise will not be executed twice at the same time. Only the first one will be executed, while the rest can still get the result of the promise after executed.
 
-## 规定
+## 承诺
 
 1. **`OnceInit` 封装的 `Promise Function` ，永远不会在同一时间被执行两次。**
 2. 如果上一个 `Promise Function` 没有执行完成就调用了下一个 `Promise Function` ，那么下一个 `Promise Function` 将共享上一个`Promise Function` 的 `Promise`。

@@ -1,25 +1,29 @@
 import mitt from "mitt";
 
-export default function oi<T>(promise: () => Promise<T>): OnceInit<T>;
-export default function oi<T>(
-  promise: () => Promise<T>,
+export default function oi<T, P>(
+  promise: (param?: P) => Promise<T>
+): OnceInit<T>;
+export default function oi<T, P>(
+  promise: (param?: P) => Promise<T>,
   defaultValue: T
 ): OnceInit<T>;
-export default function oi<T, G = T>(
-  promise: () => Promise<G>,
+export default function oi<T, G = T, P = any>(
+  promise: (param?: P) => Promise<G>,
   factory: (raw: G, observe: T | undefined) => void | T
 ): OnceInit<T, G>;
-export default function oi<T, G = T>(
-  promise: () => Promise<G>,
+export default function oi<T, G = T, P = any>(
+  promise: (param?: P) => Promise<G>,
   factory: (raw: G, observe: T) => void | T,
   defaultValue: T
 ): OnceInit<T, G>;
 
-export default function oi<T, G = T>(...args: any[]): OnceInit<T, G> {
+export default function oi<T, G = T, P = any>(
+  ...args: any[]
+): OnceInit<T, G, P> {
   if (!(args[0] instanceof Function) || args.length > 3 || args.length < 1) {
-    throw new Error("Arguments of oi is not supported");
+    throw new Error("Arguments of oi are not supported");
   }
-  const promise: () => Promise<G> = args[0];
+  const promise: (param?: P) => Promise<G> = args[0];
   if (args.length === 1) {
     return new (class extends OnceInit<T, G> {
       protected initPromise = promise;
@@ -46,13 +50,13 @@ export default function oi<T, G = T>(...args: any[]): OnceInit<T, G> {
   })(defaultValue);
 }
 
-export abstract class OnceInit<T, G = T> {
+export abstract class OnceInit<T, G = T, P = any> {
   private observe: T | undefined;
   private promise: Promise<G> | null = null;
   constructor(defaultValue?: T) {
     this.observe = defaultValue;
   }
-  protected abstract initPromise(): Promise<G>;
+  protected abstract initPromise(param?: P): Promise<G>;
   protected factory(raw: G, observe: T | undefined): void | T {
     return (observe = raw as unknown as T);
   }
@@ -61,26 +65,26 @@ export abstract class OnceInit<T, G = T> {
     loading: boolean;
   }>();
 
-  get target() {
+  get target(): T | undefined {
     if (!this.initialized) {
       this.refresh();
     }
     return this.observe;
   }
-  async init() {
+  async init(param?: P): Promise<G | T | undefined> {
     if (this.promise) {
-      return this.promise.then(() => this.observe);
+      return this.promise.finally(() => this.observe);
     }
     if (!this.initialized) {
-      await this.refresh();
+      await this.refresh(param);
     }
     return this.target;
   }
 
-  refresh = async (): Promise<T | void> => {
+  refresh = async (param?: P): Promise<G | T | void> => {
     /** 如果没有在刷新, 则进行刷新 */
     if (!this.promise) {
-      this.promise = this.initPromise();
+      this.promise = this.initPromise(param);
       this.emitter.emit("loading", true);
       const ans = this.factory(await this.promise, this.observe);
       if (ans) {
@@ -91,7 +95,7 @@ export abstract class OnceInit<T, G = T> {
       this.emitter.emit("loading", false);
       return this.observe;
     } else {
-      return this.promise.then((res) => {
+      return this.promise.finally(() => {
         return this.observe;
       });
     }
@@ -101,5 +105,3 @@ export abstract class OnceInit<T, G = T> {
     this.emitter.on("loading", handler);
   }
 }
-
-// export default Object.assign(oi, { OnceInit });

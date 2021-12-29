@@ -2,7 +2,7 @@
 
 [![npm license](https://img.shields.io/npm/l/once-init.svg?sanitize=true)](https://github.com/darkXmo/once-init/blob/main/LICENSE) [![npm version](https://img.shields.io/npm/v/once-init.svg?sanitize=true)](https://www.npmjs.com/package/once-init)
 
-Promise Init Once, Use Everywhere.
+Promise Function Init Once, Use Everywhere.
 
 只会被初始化一次的 `Promise` 函数。
 
@@ -10,7 +10,7 @@ Promise Init Once, Use Everywhere.
 
 > 同一个 `Promise` 不会在同一时间内被执行两次。
 
-## 规定
+## 承诺
 
 1. **`OnceInit` 封装的 `Promise Function` ，永远不会在同一时间被执行两次。**
 2. 如果上一个 `Promise Function` 没有执行完成就调用了下一个 `Promise Function` ，那么下一个 `Promise Function` 将共享上一个`Promise Function` 的 `Promise`。
