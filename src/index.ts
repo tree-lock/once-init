@@ -1,62 +1,76 @@
 import mitt from "mitt";
 
-export default function oi<T, P>(
-  promise: (param?: P) => Promise<T>
-): OnceInit<T>;
-export default function oi<T, P>(
-  promise: (param?: P) => Promise<T>,
+export default function oi<T>(promise: () => Promise<T>): OnceInit<T, T, void>;
+export default function oi<T>(
+  promise: () => Promise<T>,
   defaultValue: T
-): OnceInit<T>;
-export default function oi<T, G = T, P = any>(
-  promise: (param?: P) => Promise<G>,
+): OnceInit<T, T, void>;
+export default function oi<T, G = T>(
+  promise: () => Promise<G>,
   factory: (raw: G, observe: T | undefined) => void | T
-): OnceInit<T, G>;
-export default function oi<T, G = T, P = any>(
-  promise: (param?: P) => Promise<G>,
+): OnceInit<T, G, void>;
+export default function oi<T, G = T>(
+  promise: () => Promise<G>,
   factory: (raw: G, observe: T) => void | T,
   defaultValue: T
-): OnceInit<T, G>;
+): OnceInit<T, G, void>;
+export default function oi<T, P>(
+  promise: (param: P) => Promise<T>
+): OnceInit<T, T, P>;
+export default function oi<T, P>(
+  promise: (param: P) => Promise<T>,
+  defaultValue: T
+): OnceInit<T, T, P>;
+export default function oi<T, G = T, P = undefined>(
+  promise: (param: P) => Promise<G>,
+  factory: (raw: G, observe: T | undefined) => void | T
+): OnceInit<T, G, P>;
+export default function oi<T, G = T, P = undefined>(
+  promise: (param: P) => Promise<G>,
+  factory: (raw: G, observe: T) => void | T,
+  defaultValue: T
+): OnceInit<T, G, P>;
 
-export default function oi<T, G = T, P = any>(
+export default function oi<T, G = T, P = void>(
   ...args: any[]
 ): OnceInit<T, G, P> {
   if (!(args[0] instanceof Function) || args.length > 3 || args.length < 1) {
-    throw new Error("Arguments of oi are not supported");
+    throw new Error("Arguments of oi is not supported");
   }
-  const promise: (param?: P) => Promise<G> = args[0];
+  const promise: () => Promise<G> = args[0];
   if (args.length === 1) {
-    return new (class extends OnceInit<T, G> {
+    return new (class extends OnceInit<T, G, P> {
       protected initPromise = promise;
     })();
   } else if (args.length === 2) {
     if (args[1] instanceof Function) {
       const factory: (raw: G, observe: T | undefined) => void | T = args[1];
-      return new (class extends OnceInit<T, G> {
+      return new (class extends OnceInit<T, G, P> {
         protected initPromise = promise;
         protected factory = factory;
       })();
     } else {
       const defaultValue: T = args[1];
-      return new (class extends OnceInit<T, G> {
+      return new (class extends OnceInit<T, G, P> {
         protected initPromise = promise;
       })(defaultValue);
     }
   }
   const factory: (raw: G, observe: T | undefined) => void | T = args[1];
   const defaultValue: T = args[2];
-  return new (class extends OnceInit<T, G> {
+  return new (class extends OnceInit<T, G, P> {
     protected initPromise = promise;
     protected factory = factory;
   })(defaultValue);
 }
 
-export abstract class OnceInit<T, G = T, P = any> {
+export abstract class OnceInit<T, G = T, P = void> {
   private observe: T | undefined;
   private promise: Promise<G> | null = null;
   constructor(defaultValue?: T) {
     this.observe = defaultValue;
   }
-  protected abstract initPromise(param?: P): Promise<G>;
+  protected abstract initPromise(param: P): Promise<G>;
   protected factory(raw: G, observe: T | undefined): void | T {
     return (observe = raw as unknown as T);
   }
@@ -66,12 +80,12 @@ export abstract class OnceInit<T, G = T, P = any> {
   }>();
 
   get target(): T | undefined {
-    if (!this.initialized) {
-      this.refresh();
+    if (!this.initialized && this.initPromise.length === 0) {
+      this.refresh(undefined as unknown as P);
     }
     return this.observe;
   }
-  async init(param?: P): Promise<G | T | undefined> {
+  async init(param: P): Promise<G | T | undefined> {
     if (this.promise) {
       return this.promise.finally(() => this.observe);
     }
@@ -81,7 +95,7 @@ export abstract class OnceInit<T, G = T, P = any> {
     return this.target;
   }
 
-  refresh = async (param?: P): Promise<G | T | void> => {
+  refresh = async (param: P): Promise<G | T | void> => {
     /** 如果没有在刷新, 则进行刷新 */
     if (!this.promise) {
       this.promise = this.initPromise(param);
