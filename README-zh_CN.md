@@ -105,7 +105,7 @@ await oiInstance.init(); // since the value has been initialized, it will return
 
 ### target
 
-`target` 是同步获取返回值的 `api` 。
+`target` 属性能同步获取返回值。
 
 ```typescript
 function functionE() {
@@ -115,7 +115,7 @@ function functionE() {
 }
 ```
 
-如果在这之前已经完成初始化的话，`target` 的值将是 `Promise` 的返回值，否则，`target` 的值将会是 `undefined` 。例如，
+如果在获取 `target` 之前已经完成初始化，`target` 的值为 `Promise` 的返回值，否则，`target` 的值为 `undefined` 。例如，
 
 ```typescript
 const res = oiInstance.target; // undefined
@@ -127,9 +127,11 @@ await oiInstance.init();
 const res = oiInstance.target; // [Return Value] 777
 ```
 
-请注意，虽然是同步获取，如果没有事先完成初始化的话，获取 `target` 属性也会开始初始化。
+请注意，虽然是同步获取，但 `once-init` 仍然会认为你此时需要发出请求，因此调用 `target` 属性也会开始初始化。
 
-在下面这个例子中，我们假设 `api` 的请求时长是 `10s` 。在下面这个例子里，请求在
+> 但如果 `Promise Function` 是带参数的 `Function` ，则不会执行初始化。
+
+我们假设 `api` 的请求时长是 `10s` 。在下面这个例子里，请求在第一行的时候就已经发出。
 
 ```typescript
 const res = oiInstance.target; // undefined
@@ -141,7 +143,7 @@ setTimeout(async () => {
 }, 10001);
 ```
 
-和同时先后同步执行两次 `init` 一样，假如在获取 `init` 之前访问了 `target` 属性，而 访问 `target` 导致的 `Promise` 请求没有结束的话，`init` 将直接等待上一个 `Promise` 结束并获取同一个值。
+和同时先后同步执行两次 `init` 一样，假如在获取 `init` 之前访问了 `target` 属性，而 访问 `target` 导致的 `Promise` 请求没有结束的话，`init` 将直接等待上一个 `Promise` 结束并返回上一个 `Promise` 的返回值 。
 
 下面这个例子将会帮助你理解。
 
@@ -155,9 +157,9 @@ setTimeout(async () => {
 }, 2000);
 ```
 
-### defaultValue
-
 这里的 `init` 将会等待上一个 `Promise` 函数执行的返回值，由于 `init` 是在 `200ms` 之后才执行的，所以它只需要再等待大约 `800ms` 就能获得这个返回值了。
+
+### defaultValue
 
 使用 `target` 属性通常需要搭配默认值，而 `oi` 的第二个参数可以为你的 `Promise` 定义默认值。
 
@@ -179,7 +181,7 @@ const ans = await oiInstance.init(); // [Retrun Value] 777
 const ansAfterRefresh = await oiInstance.refresh(); // [Retrun Value] 888
 ```
 
-刷新之后，调用 `init` 和 `target` 获取的值都将会更新。
+刷新之后，调用 `init` 和 `target` 获取的值会变成新的值。
 
 ```typescript
 oiInstance.target; // undefined
@@ -234,7 +236,7 @@ setTimeout(async () => {
 /** After 10000ms, two refresh will be exected at the same time */
 ```
 
-如果异步先后调用了两次 `refresh` ，那么发送两次请求，和不封装的效果一致。
+如果异步先后调用了两次 `refresh` ，那么发送两次请求，和用`oi`封装前的 `Promise Function` 的执行效果一致。
 
 ```typescript
 async function functionA() {
@@ -250,18 +252,41 @@ await functionB(); // 'B', [Promise Retrun Value] 888
 
 **如果你觉得逻辑太过复杂，那请至少要记住一点，`OnceInit` 封装的 `Promise Function` ，永远不会在同一时间被执行两次**。
 
+### Param
+
+`Promise Function` 允许传递任意参数，需要注意的是，如果在第一个 `Promise` 执行期间，通过 `api` 传入了多个不同的参数，那么只会得到第一个参数的 `Promise` 的结果。
+
+假设 `/api/abs` 的返回值是 `param` 的绝对值，执行时间为 `10s === 10000ms` 。
+
+```typescript
+const oiInstance = oi(async (param: number) => {
+  const response: AxiosResponse<number> = await axios.get("/api/abs/" + param);
+  return response.data;
+}, 0);
+
+await oiInstance.init(-10); // [Promise Return Value] 10
+/** Only the first promise will be executed */
+oiInstance.refresh(-888).then((res) => {
+  console.log(res); // [Promise Retrun Value] 888
+});
+/** The rest params will be ignored */
+oiInstance.refresh(-777).then((res) => {
+  console.log(res); // [Promise Retrun Value] 888
+});
+```
+
 ### factory
 
-如果 `Promise` 的返回值不是是你期望的返回值，你可以传入 `factory` 参数返回值加工它。
+如果 `Promise` 的返回值需要加工，可以传入 `factory` 参数来实现加工。
 
-例如，`api` 传递过来的数据是一个时间戳，而你希望获得的是一个 `Date` 对象。
+例如，`api` 传递过来的数据是一个时间戳，而希望获得返回值是一个 `Date` 对象。
 
 ```typescript
 const ans = await oiInstance.init(); // [Timestamp] 1640673370941
 const wishAns = new Date(ans);
 ```
 
-你可以再封装一层，或者，你可以传入一个 `factory` 函数作为参数，让 `Promise Function` 在执行 `Promise` 完成之后，自动加工为新的值。
+你可以传入一个 `factory` 函数作为参数，让 `Promise Function` 在执行 `Promise` 完成之后，自动加工为新的值。
 
 ```typescript
 const factory = (raw: number) => new Date(raw);
@@ -276,7 +301,7 @@ const ans = await oiInstance.init(); // [Promise Return Value] Date
 const oiInstance = oi(requestTimeStamp, factory, new Date());
 ```
 
-如果 `Promise` 的返回值只是某个对象的一部分，你还可以用 `factory` 的第二个参数来进行修改。
+如果 `Promise` 的返回值只是某个对象的一部分，你还可以用 `factory` 的第二个参数来对对象进行局部修改。
 
 ```typescript
 interface I {
@@ -355,30 +380,5 @@ setTimeout(() => {
 
 numberInstance.init().then(() => {
   console.log(numberInstance.target); // [Promise Return Value] 777
-});
-```
-
-## HELP
-
-### 参数
-
-`Promise Function` 允许传递参数，需要注意的是，如果在第一个 `Promise` 执行期间，通过 `api` 传入了多个不同的参数，那么只会得到第一个参数的 `Promise` 的结果。
-
-假设 `/api/abs` 的返回值是 `param` 的绝对值，执行时间为 `10s === 10000ms` 。
-
-```typescript
-const oiInstance = oi(async (param: number) => {
-  const response: AxiosResponse<number> = await axios.get("/api/abs/" + param);
-  return response.data;
-}, 0);
-
-await oiInstance.init(-10); // [Promise Return Value] 10
-/** Only the first promise will be executed */
-oiInstance.refresh(-888).then((res) => {
-  console.log(res); // [Promise Retrun Value] 888
-});
-/** The rest params will be ignored */
-oiInstance.refresh(-777).then((res) => {
-  console.log(res); // [Promise Retrun Value] 888
 });
 ```

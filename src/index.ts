@@ -1,43 +1,29 @@
 import mitt from "mitt";
 
-export default function oi<T>(promise: () => Promise<T>): OnceInit<T>;
-export default function oi<T>(
-  promise: () => Promise<T>,
-  defaultValue: T
-): OnceInit<T>;
-export default function oi<T, G = T>(
-  promise: () => Promise<G>,
-  factory: (raw: G, observe: T | void) => void | T
-): OnceInit<T, G>;
-export default function oi<T, G = T>(
-  promise: () => Promise<G>,
-  factory: (raw: G, observe: T) => void | T,
-  defaultValue: T
-): OnceInit<T, G>;
-export default function oi<T, P>(
-  promise: (param: P) => Promise<T>
+export default function oi<T, P extends Array<any>>(
+  promise: (...param: P) => Promise<T>
 ): OnceInit<T, T, P>;
-export default function oi<T, P>(
-  promise: (param: P) => Promise<T>,
+export default function oi<T, P extends Array<any>>(
+  promise: (...param: P) => Promise<T>,
   defaultValue: T
 ): OnceInit<T, T, P>;
-export default function oi<T, G = T, P = void>(
-  promise: (param: P) => Promise<G>,
+export default function oi<T, G = T, P extends Array<any> = void[]>(
+  promise: (...param: P) => Promise<G>,
   factory: (raw: G, observe: T | void) => void | T
 ): OnceInit<T, G, P>;
-export default function oi<T, G = T, P = void>(
-  promise: (param: P) => Promise<G>,
+export default function oi<T, G = T, P extends Array<any> = void[]>(
+  promise: (...param: P) => Promise<G>,
   factory: (raw: G, observe: T) => void | T,
   defaultValue: T
 ): OnceInit<T, G, P>;
 
-export default function oi<T, G = T, P = void>(
+export default function oi<T, G = T, P extends Array<any> = void[]>(
   ...args: any[]
 ): OnceInit<T, G, P> {
   if (!(args[0] instanceof Function) || args.length > 3 || args.length < 1) {
     throw new Error("Arguments of oi is not supported");
   }
-  const promise: () => Promise<G> = args[0];
+  const promise: (...param: P) => Promise<G> = args[0];
   if (args.length === 1) {
     return new (class extends OnceInit<T, G, P> {
       protected initPromise = promise;
@@ -64,40 +50,40 @@ export default function oi<T, G = T, P = void>(
   })(defaultValue);
 }
 
-export abstract class OnceInit<T, G = T, P = void> {
-  private observe: T | void;
-  private promise: Promise<G> | null = null;
+export abstract class OnceInit<T, G = T, P extends Array<any> = void[]> {
+  protected observe: T | void;
+  protected promise: Promise<G> | null = null;
   constructor(defaultValue?: T) {
     this.observe = defaultValue;
   }
-  protected abstract initPromise(param: P): Promise<G>;
+  protected abstract initPromise(...param: P): Promise<G>;
   protected factory(raw: G, observe: T | void): void | T {
     return (observe = raw as unknown as T);
   }
-  private initialized: boolean = false;
-  private emitter = mitt<{
+  protected initialized: boolean = false;
+  protected emitter = mitt<{
     loading: boolean;
   }>();
 
   get target(): T | void {
     if (!this.initialized && this.initPromise.length === 0) {
-      this.refresh(undefined as unknown as P);
+      this.refresh(...([] as unknown as P));
     }
     return this.observe;
   }
-  async init(param: P): Promise<G | T | void> {
+  async init(...param: P): Promise<G | T | void> {
     if (this.promise) {
       return this.promise.finally(() => this.observe);
     }
     if (!this.initialized) {
-      await this.refresh(param);
+      await this.refresh(...param);
     }
     return this.target;
   }
 
-  refresh = async (param: P): Promise<G | T | void> => {
+  refresh = async (...param: P): Promise<G | T | void> => {
     if (!this.promise) {
-      this.promise = this.initPromise(param);
+      this.promise = this.initPromise(...param);
       this.emitter.emit("loading", true);
       const ans = this.factory(await this.promise, this.observe);
       if (ans) {
