@@ -1,19 +1,19 @@
 import mitt from "mitt";
 
-export default function oi<T>(promise: () => Promise<T>): OnceInit<T, T, void>;
+export default function oi<T>(promise: () => Promise<T>): OnceInit<T>;
 export default function oi<T>(
   promise: () => Promise<T>,
   defaultValue: T
-): OnceInit<T, T, void>;
+): OnceInit<T>;
 export default function oi<T, G = T>(
   promise: () => Promise<G>,
-  factory: (raw: G, observe: T | undefined) => void | T
-): OnceInit<T, G, void>;
+  factory: (raw: G, observe: T | void) => void | T
+): OnceInit<T, G>;
 export default function oi<T, G = T>(
   promise: () => Promise<G>,
   factory: (raw: G, observe: T) => void | T,
   defaultValue: T
-): OnceInit<T, G, void>;
+): OnceInit<T, G>;
 export default function oi<T, P>(
   promise: (param: P) => Promise<T>
 ): OnceInit<T, T, P>;
@@ -21,11 +21,11 @@ export default function oi<T, P>(
   promise: (param: P) => Promise<T>,
   defaultValue: T
 ): OnceInit<T, T, P>;
-export default function oi<T, G = T, P = undefined>(
+export default function oi<T, G = T, P = void>(
   promise: (param: P) => Promise<G>,
-  factory: (raw: G, observe: T | undefined) => void | T
+  factory: (raw: G, observe: T | void) => void | T
 ): OnceInit<T, G, P>;
-export default function oi<T, G = T, P = undefined>(
+export default function oi<T, G = T, P = void>(
   promise: (param: P) => Promise<G>,
   factory: (raw: G, observe: T) => void | T,
   defaultValue: T
@@ -44,7 +44,7 @@ export default function oi<T, G = T, P = void>(
     })();
   } else if (args.length === 2) {
     if (args[1] instanceof Function) {
-      const factory: (raw: G, observe: T | undefined) => void | T = args[1];
+      const factory: (raw: G, observe: T | void) => void | T = args[1];
       return new (class extends OnceInit<T, G, P> {
         protected initPromise = promise;
         protected factory = factory;
@@ -56,7 +56,7 @@ export default function oi<T, G = T, P = void>(
       })(defaultValue);
     }
   }
-  const factory: (raw: G, observe: T | undefined) => void | T = args[1];
+  const factory: (raw: G, observe: T | void) => void | T = args[1];
   const defaultValue: T = args[2];
   return new (class extends OnceInit<T, G, P> {
     protected initPromise = promise;
@@ -65,13 +65,13 @@ export default function oi<T, G = T, P = void>(
 }
 
 export abstract class OnceInit<T, G = T, P = void> {
-  private observe: T | undefined;
+  private observe: T | void;
   private promise: Promise<G> | null = null;
   constructor(defaultValue?: T) {
     this.observe = defaultValue;
   }
   protected abstract initPromise(param: P): Promise<G>;
-  protected factory(raw: G, observe: T | undefined): void | T {
+  protected factory(raw: G, observe: T | void): void | T {
     return (observe = raw as unknown as T);
   }
   private initialized: boolean = false;
@@ -79,13 +79,13 @@ export abstract class OnceInit<T, G = T, P = void> {
     loading: boolean;
   }>();
 
-  get target(): T | undefined {
+  get target(): T | void {
     if (!this.initialized && this.initPromise.length === 0) {
       this.refresh(undefined as unknown as P);
     }
     return this.observe;
   }
-  async init(param: P): Promise<G | T | undefined> {
+  async init(param: P): Promise<G | T | void> {
     if (this.promise) {
       return this.promise.finally(() => this.observe);
     }
@@ -96,7 +96,6 @@ export abstract class OnceInit<T, G = T, P = void> {
   }
 
   refresh = async (param: P): Promise<G | T | void> => {
-    /** 如果没有在刷新, 则进行刷新 */
     if (!this.promise) {
       this.promise = this.initPromise(param);
       this.emitter.emit("loading", true);
