@@ -1,8 +1,11 @@
-# once-init
+# oinit
 
-[![npm license](https://img.shields.io/npm/l/once-init.svg?sanitize=true)](https://github.com/darkXmo/once-init/blob/main/LICENSE) [![npm version](https://img.shields.io/npm/v/once-init.svg?sanitize=true)](https://www.npmjs.com/package/once-init)
+<p align="center">
+  <a href="https://github.com/darkXmo/once-init/blob/main/LICENSE"><img src="https://img.shields.io/npm/l/once-init.svg?sanitize=true" alt="npm"></a>
+  <a href="https://www.npmjs.com/package/once-init"><img src="https://img.shields.io/npm/v/once-init.svg?sanitize=true" alt="gzip size"></a>
+</p>
 
-Promise Function Init Once, Use Everywhere.
+<strong style="text-align: center;">🗼 Let Promise Function Executed Only Once.</strong>
 
 只会被初始化一次的 `Promise` 函数。
 
@@ -10,12 +13,64 @@ Promise Function Init Once, Use Everywhere.
 
 > 同一个 `Promise` 不会在同一时间内被执行两次。
 
+[完整版 Github 仓库(包括`factory`和`onLoading`)](https://github.com/darkXmo/once-init)
+
 ## 承诺
 
 1. **`OnceInit` 封装的 `Promise Function` ，永远不会在同一时间被执行两次。**
 2. 如果上一个 `Promise Function` 没有执行完成就调用了下一个 `Promise Function` ，那么下一个 `Promise Function` 将共享上一个`Promise Function` 的 `Promise`。
 
-## 示例
+## Install
+
+使用包管理工具安装, 推荐使用`pnpm`;
+
+```bash
+npm install once-init
+```
+
+OR
+
+```bash
+yarn add once-init
+```
+
+OR
+
+```bash
+pnpm add once-init
+```
+
+## Usage
+
+例如, 在 `once-init` 搭配 `axios` 使用;
+
+> 假设 `res` 的返回值为 `any` ;
+
+```typescript
+import oi from "once-init";
+const request = async () => {
+  const res: AxiosResponse<any> = await axiosInstance.get("/api");
+  return res.data;
+};
+oi(request, -1);
+
+oi.target; // -1
+
+await oi.init(); // [Axios Response Data Value] (any)
+await oi.refresh(); // [Axios Response Data Value] (any)
+
+await oi.init(); // [No Axios Request Sent] (any)
+oi.target; // (any)
+
+oi.refresh().then((res) => {
+  console.log(res); // [Axios Response Data Value] (any)
+});
+oi.refresh().then((res) => {
+  console.log(res); // [Previous Axios Response Data Value] (any)
+});
+```
+
+## Apis
 
 假设存在一个 `axios` `Promise` 请求，返回值类型为 `number` ，值为 `777`。
 

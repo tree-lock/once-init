@@ -1,21 +1,76 @@
 # once-init
 
-[![npm license](https://img.shields.io/npm/l/once-init.svg?sanitize=true)](https://github.com/darkXmo/once-init/blob/main/LICENSE) [![npm version](https://img.shields.io/npm/v/once-init.svg?sanitize=true)](https://www.npmjs.com/package/once-init)
+<p align="center">
+  <a href="https://github.com/darkXmo/once-init/blob/main/LICENSE"><img src="https://img.shields.io/npm/l/once-init.svg?sanitize=true" alt="npm"></a>
+  <a href="https://www.npmjs.com/package/once-init"><img src="https://img.shields.io/npm/v/once-init.svg?sanitize=true" alt="gzip size"></a>
+</p>
 
-Init Once, Use Everywhere.
+<strong style="text-align: center;">🗼 Let Promise Function Executed Only Once.</strong>
 
-Let Promise only be initialized once.
+> The `Promise` will be executed when the attribute target is called for the first time, and the `Promise` executed will not be executed again when called repeatedly.
 
-> The Promise will be executed when the attribute target is called for the first time, and the Promise executed will not be executed again when called repeatedly.
+> The same `Promise` will not be executed twice at the same time. Only the first one will be executed, while the rest can still get the result of the `promise` after executed.
 
-> The same Promise will not be executed twice at the same time. Only the first one will be executed, while the rest can still get the result of the promise after executed.
+[If you are looking for the full version of once-init(including factory and onLoading), click me](https://github.com/darkXmo/once-init)
 
 ## Once init Promise
 
 1. **The `Promise Function` packaged by `OnceInit` will never be executed twice at the same time**
 2. If A `Promise Function` is called before previous `Promise Function` resolved， It will share the response of the previous one.
 
-## 示例
+## Install
+
+Install by package management tools, `pnpm` is recommended;
+
+```bash
+npm install once-init
+```
+
+OR
+
+```bash
+yarn add once-init
+```
+
+OR
+
+```bash
+pnpm add once-init
+```
+
+## Usage
+
+For example, use `once-init` with `axios`;
+
+> assume `res` response returns `any`;
+
+```typescript
+import oi from "once-init";
+const request = async () => {
+  const res: AxiosResponse<any> = await axiosInstance.get("/api");
+  return res.data;
+};
+oi(request, -1);
+
+oi.target; // -1
+
+await oi.init(); // [Axios Response Data Value] (any)
+await oi.refresh(); // [Axios Response Data Value] (any)
+
+await oi.init(); // [No Axios Request Sent] (any)
+oi.target; // (any)
+
+oi.refresh().then((res) => {
+  console.log(res); // [Axios Response Data Value] (any)
+});
+oi.refresh().then((res) => {
+  console.log(res); // [Previous Axios Response Data Value] (any)
+});
+```
+
+## Apis
+
+### oi (default export)
 
 假设存在一个 `axios` `Promise` 请求，返回值类型为 `number` ，值为 `777`。
 
