@@ -1,9 +1,6 @@
 export default function oi<T, P extends Array<any>>(
-  promise: (...param: P) => Promise<T>
-): OnceInit<T, T, P>;
-export default function oi<T, P extends Array<any>>(
   promise: (...param: P) => Promise<T>,
-  defaultValue: T
+  defaultValue?: T
 ): OnceInit<T, T, P>;
 export default function oi<T, G = T, P extends Array<any> = void[]>(
   promise: (...param: P) => Promise<G>,
