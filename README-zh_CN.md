@@ -13,7 +13,7 @@
 
 > 同一个 `Promise` 不会在同一时间内被执行两次。
 
-[完整版 Github 仓库(包括`factory`和`onLoading`)](https://github.com/darkXmo/once-init)
+[精简版 Github 仓库(不包括`factory`和`onLoading`)](https://github.com/darkXmo/oinit)
 
 ## 承诺
 
