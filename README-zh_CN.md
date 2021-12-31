@@ -1,4 +1,4 @@
-# oinit
+# once-init
 
 <p align="center">
   <a href="https://github.com/darkXmo/once-init/blob/main/LICENSE"><img src="https://img.shields.io/npm/l/once-init.svg?sanitize=true" alt="npm"></a>
@@ -14,6 +14,7 @@
 > 同一个 `Promise` 不会在同一时间内被执行两次。
 
 [精简版 Github 仓库(不包括`factory`和`onLoading`)](https://github.com/darkXmo/oinit)
+[中国镜像](https://gitee.com/dXmo/once-init)
 
 ## 承诺
 

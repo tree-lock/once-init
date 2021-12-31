@@ -39,7 +39,7 @@ export default function oi<T, G = T, P extends Array<any> = void[]>(
       })(defaultValue);
     }
   }
-  const factory: (raw: G, observe: T | void) => void | T = args[1];
+  const factory: (raw: G, observe: T) => void | T = args[1];
   const defaultValue: T = args[2];
   return new (class extends OnceInit<T, G, P> {
     protected initPromise = promise;

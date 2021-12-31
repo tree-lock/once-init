@@ -12,6 +12,7 @@
 > The same `Promise` will not be executed twice at the same time. Only the first one will be executed, while the rest can still get the result of the `promise` after executed.
 
 [If you are looking for the mini version of once-init(excluding factory and onLoading), click me](https://github.com/darkXmo/oinit)
+[中国镜像](https://gitee.com/dXmo/once-init)
 
 ## Once init Promise
 
