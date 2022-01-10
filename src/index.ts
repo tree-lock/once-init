@@ -53,7 +53,6 @@ export default function oi<T, G = T, P extends Array<any> = void[]>(
 export abstract class OnceInit<T, G = T, P extends Array<any> = void[]> {
   protected observe: T | undefined;
   protected promise: Promise<G> | null = null;
-  constructor() {}
   protected abstract initPromise(...param: P): Promise<G>;
   protected factory(raw: G, observe: T | void): void | T {
     return (observe = raw as unknown as T);
