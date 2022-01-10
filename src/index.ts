@@ -1,9 +1,12 @@
 import mitt from "mitt";
 
 export default function oi<T, P extends Array<any>>(
-  promise: (...param: P) => Promise<T>,
-  defaultValue?: T
+  promise: (...param: P) => Promise<T>
 ): OnceInit<T, T, P>;
+export default function oi<T, P extends Array<any>>(
+  promise: (...param: P) => Promise<T>,
+  defaultValue: T
+): InitOnceInit<T, T, P>;
 export default function oi<T, G = T, P extends Array<any> = void[]>(
   promise: (...param: P) => Promise<G>,
   factory: (raw: G, observe: T | void) => void | T
@@ -12,7 +15,7 @@ export default function oi<T, G = T, P extends Array<any> = void[]>(
   promise: (...param: P) => Promise<G>,
   factory: (raw: G, observe: T) => void | T,
   defaultValue: T
-): OnceInit<T, G, P>;
+): InitOnceInit<T, G, P>;
 
 export default function oi<T, G = T, P extends Array<any> = void[]>(
   ...args: any[]
