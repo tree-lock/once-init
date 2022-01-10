@@ -34,25 +34,23 @@ export default function oi<T, G = T, P extends Array<any> = void[]>(
       })();
     } else {
       const defaultValue: T = args[1];
-      return new (class extends OnceInit<T, G, P> {
+      return new (class extends InitOnceInit<T, G, P> {
         protected initPromise = promise;
       })(defaultValue);
     }
   }
   const factory: (raw: G, observe: T) => void | T = args[1];
   const defaultValue: T = args[2];
-  return new (class extends OnceInit<T, G, P> {
+  return new (class extends InitOnceInit<T, G, P> {
     protected initPromise = promise;
     protected factory = factory;
   })(defaultValue);
 }
 
 export abstract class OnceInit<T, G = T, P extends Array<any> = void[]> {
-  protected observe: T | void;
+  protected observe: T | undefined;
   protected promise: Promise<G> | null = null;
-  constructor(defaultValue?: T) {
-    this.observe = defaultValue;
-  }
+  constructor() {}
   protected abstract initPromise(...param: P): Promise<G>;
   protected factory(raw: G, observe: T | void): void | T {
     return (observe = raw as unknown as T);
@@ -62,34 +60,34 @@ export abstract class OnceInit<T, G = T, P extends Array<any> = void[]> {
     loading: boolean;
   }>();
 
-  get target(): T | void {
+  get target(): T | undefined {
     if (!this.initialized && this.initPromise.length === 0) {
       this.refresh(...([] as unknown as P));
     }
     return this.observe;
   }
-  async init(...param: P): Promise<G | T | void> {
+  async init(...param: P): Promise<G | T> {
     if (this.promise) {
       return this.promise.finally(() => this.observe);
     }
     if (!this.initialized) {
       await this.refresh(...param);
     }
-    return this.target;
+    return this.observe as T;
   }
 
-  refresh = async (...param: P): Promise<G | T | void> => {
+  refresh = async (...param: P): Promise<G | T> => {
     if (!this.promise) {
       this.promise = this.initPromise(...param);
       this.emitter.emit("loading", true);
       const ans = this.factory(await this.promise, this.observe);
-      if (ans) {
+      if (typeof ans !== "undefined" && ans !== null) {
         this.observe = ans;
       }
       this.promise = null;
       this.initialized = true;
       this.emitter.emit("loading", false);
-      return this.observe;
+      return this.observe as T;
     } else {
       return this.promise.finally(() => {
         return this.observe;
@@ -99,5 +97,26 @@ export abstract class OnceInit<T, G = T, P extends Array<any> = void[]> {
 
   onLoading(handler: (event: boolean) => void) {
     this.emitter.on("loading", handler);
+  }
+}
+
+/**
+ * OnceInit with default value
+ */
+export abstract class InitOnceInit<
+  T,
+  G = T,
+  P extends Array<any> = void[]
+> extends OnceInit<T, G, P> {
+  protected declare observe: T;
+  get target(): T {
+    if (!this.initialized && this.initPromise.length === 0) {
+      this.refresh(...([] as unknown as P));
+    }
+    return this.observe;
+  }
+  constructor(defaultValue: T) {
+    super();
+    this.observe = defaultValue;
   }
 }
