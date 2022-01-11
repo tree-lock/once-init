@@ -7,7 +7,7 @@
 
 <strong style="text-align: center;">🗼 Let Promise Function Executed Only Once.</strong>
 
-> The `Promise` will be executed when the attribute target is called for the first time, and the `Promise` executed will not be executed again when called repeatedly.
+> The `Promise` will be executed when the attribute target is called for the first time, and the `Promise` will not be executed again when called repeatedly.
 
 > The same `Promise` will not be executed twice at the same time. Only the first one will be executed, while the rest can still get the result of the `promise` after executed.
 
