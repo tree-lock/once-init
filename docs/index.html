@@ -5,19 +5,32 @@
     <link rel="icon" type="image/svg+xml" href="/once-init/assets/favicon.17e50649.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Vite App</title>
-    <script type="module" crossorigin src="/once-init/assets/index.a281be14.js"></script>
-    <link rel="modulepreload" href="/once-init/assets/vendor.1013f282.js">
-    <link rel="stylesheet" href="/once-init/assets/index.49ace441.css">
+    <script type="module" crossorigin src="/once-init/assets/index.fbf67086.js"></script>
+    <link rel="modulepreload" href="/once-init/assets/vendor.87ca12ed.js">
+    <link rel="stylesheet" href="/once-init/assets/index.3cd324c4.css">
   </head>
   <body>
     <h1 class="title">
       Hello, <a href="https://github.com/darkXmo/once-init">once-init</a>
     </h1>
     <div class="language">
-      <span>中文</span>
-      <span>English</span>
+      <span id="chinese">中文</span>
+      <span id="english">English</span>
     </div>
-    <div class="card" id="app"></div>
+    <div class="card" id="app">
+      <div id="content">
+        <div id="info"></div>
+        <div class="operations">
+          <span>Send Request by</span>
+          <button id="common" class="common">common request</button>
+          /
+          <button id="oi" class="oi">oi packaged request</button>
+        </div>
+        <p>Request Status [ <span id="status">sleep</span> ]</p>
+        <p class="content">value: <span class="value" id="value">0</span></p>
+        <p>Request Sent Count <span id="count">0</span></p>
+      </div>
+    </div>
 
     
   </body>

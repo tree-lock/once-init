@@ -49,7 +49,7 @@ export default function oi<T, G = T, P extends Array<any> = void[]>(
     protected factory = factory;
   })(defaultValue);
 }
-
+type A = void[];
 export abstract class OnceInit<T, G = T, P extends Array<any> = void[]> {
   protected observe: T | undefined;
   protected promise: Promise<G> | null = null;
