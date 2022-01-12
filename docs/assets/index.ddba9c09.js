@@ -1,5 +1,5 @@
-import { M as c, e as f, a as h } from "./vendor.01000a7d.js";
-const g = function () {
+import { m as c, e as h, a as g } from "./vendor.44463c4b.js";
+const p = function () {
   const e = document.createElement("link").relList;
   if (e && e.supports && e.supports("modulepreload")) return;
   for (const n of document.querySelectorAll('link[rel="modulepreload"]')) s(n);
@@ -29,10 +29,10 @@ const g = function () {
     fetch(n.href, r);
   }
 };
-g();
-c.setup({ timeout: "1200-1600" });
-c.mock("/example", "get", () => c.Random.int(0, 1e4));
-function p() {
+p();
+c.exports.setup({ timeout: "1200-1600" });
+c.exports.mock("/example", "get", () => c.exports.Random.int(0, 1e4));
+function m() {
   var t = [].slice.call(arguments);
   if (!(t[0] instanceof Function) || t.length > 3 || t.length < 1)
     throw new Error("Arguments of oi is not supported");
@@ -54,7 +54,7 @@ function p() {
     }
     {
       const n = t[1];
-      return new (class extends m {
+      return new (class extends d {
         constructor(...r) {
           super(...r), (this.initPromise = e);
         }
@@ -63,7 +63,7 @@ function p() {
   }
   const o = t[1],
     s = t[2];
-  return new (class extends m {
+  return new (class extends d {
     constructor(...n) {
       super(...n), (this.initPromise = e), (this.factory = o);
     }
@@ -74,7 +74,7 @@ class l {
     (this.observe = void 0),
       (this.promise = null),
       (this.initialized = !1),
-      (this.emitter = f()),
+      (this.emitter = h()),
       (this.refresh = (() => {
         var e = this;
         return function () {
@@ -135,7 +135,7 @@ class l {
     this.emitter.on("loading", e);
   }
 }
-class m extends l {
+class d extends l {
   get target() {
     return (
       this.initialized || this.initPromise.length !== 0 || this.refresh(),
@@ -146,7 +146,7 @@ class m extends l {
     super(), (this.observe = e);
   }
 }
-const u = h.create();
+const u = g.create();
 let v = 0;
 u.interceptors.request.use(
   (t) => {
@@ -177,18 +177,19 @@ const y = async () => {
   const e = await u.get("/example");
   return a--, a === 0 && (t.innerText = "done"), e.data;
 };
-var d = { count: y };
-const P = d.count,
-  x = p(d.count).refresh,
+var f = { count: y };
+window.oi = m;
+const x = f.count,
+  P = m(f.count).refresh,
   b = document.getElementById("common"),
   E = document.getElementById("oi");
 b.addEventListener("click", () =>
-  P().then((t) => {
+  x().then((t) => {
     document.getElementById("value").innerText = t.toString();
   })
 );
 E.addEventListener("click", () =>
-  x().then((t) => {
+  P().then((t) => {
     document.getElementById("value").innerText = t.toString();
   })
 );

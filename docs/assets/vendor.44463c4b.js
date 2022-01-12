@@ -5786,34 +5786,34 @@ var commonjsGlobal =
         function r(P) {
           (this.type = P), (this.offset = r.offset()), (this.text = r.text());
         }
-        function s(P, D) {
-          r.call(this, "alternate"), (this.left = P), (this.right = D);
+        function s(P, M) {
+          r.call(this, "alternate"), (this.left = P), (this.right = M);
         }
         function u(P) {
           r.call(this, "match"), (this.body = P.filter(Boolean));
         }
-        function c(P, D) {
-          r.call(this, P), (this.body = D);
+        function c(P, M) {
+          r.call(this, P), (this.body = M);
         }
         function f(P) {
           c.call(this, "capture-group"),
             (this.index = L[this.offset] || (L[this.offset] = O++)),
             (this.body = P);
         }
-        function d(P, D) {
-          r.call(this, "quantified"), (this.body = P), (this.quantifier = D);
+        function d(P, M) {
+          r.call(this, "quantified"), (this.body = P), (this.quantifier = M);
         }
-        function v(P, D) {
+        function v(P, M) {
           r.call(this, "quantifier"),
             (this.min = P),
-            (this.max = D),
+            (this.max = M),
             (this.greedy = !0);
         }
-        function h(P, D) {
-          r.call(this, "charset"), (this.invert = P), (this.body = D);
+        function h(P, M) {
+          r.call(this, "charset"), (this.invert = P), (this.body = M);
         }
-        function p(P, D) {
-          r.call(this, "range"), (this.start = P), (this.end = D);
+        function p(P, M) {
+          r.call(this, "range"), (this.start = P), (this.end = M);
         }
         function y(P) {
           r.call(this, "literal"),
@@ -5842,7 +5842,7 @@ var commonjsGlobal =
               }
               (N.prototype = H.prototype), (w.prototype = new N());
             }
-            function D(w, H, N, q, $) {
+            function M(w, H, N, q, $) {
               function i0(U, W) {
                 function G(V) {
                   function j(I) {
@@ -5900,9 +5900,9 @@ var commonjsGlobal =
                 return T;
               }
               function q(t) {
-                function a(b, S, M) {
+                function a(b, S, D) {
                   var B, J;
-                  for (B = S; M > B; B++)
+                  for (B = S; D > B; B++)
                     (J = w.charAt(B)),
                       J ===
                       `
@@ -5932,7 +5932,7 @@ var commonjsGlobal =
                   t[a - 1] === t[a] ? t.splice(a, 1) : a++;
               }
               function U() {
-                var t, a, b, S, M;
+                var t, a, b, S, D;
                 return (
                   (t = o),
                   (a = W()),
@@ -5942,9 +5942,9 @@ var commonjsGlobal =
                         ? ((S = L2), o++)
                         : ((S = null), R === 0 && $(N2)),
                       S !== null
-                        ? ((M = U()),
-                          M !== null
-                            ? ((S = [S, M]), (b = S))
+                        ? ((D = U()),
+                          D !== null
+                            ? ((S = [S, D]), (b = S))
                             : ((o = b), (b = k)))
                         : ((o = b), (b = k)),
                       b === null && (b = z),
@@ -5959,7 +5959,7 @@ var commonjsGlobal =
                 );
               }
               function W() {
-                var t, a, b, S, M;
+                var t, a, b, S, D;
                 if (((t = o), (a = _()), a === null && (a = z), a !== null))
                   if (
                     ((b = o),
@@ -5969,14 +5969,14 @@ var commonjsGlobal =
                     S === null ? (b = z) : ((o = b), (b = k)),
                     b !== null)
                   ) {
-                    for (S = [], M = V(), M === null && (M = G()); M !== null; )
-                      S.push(M), (M = V()), M === null && (M = G());
+                    for (S = [], D = V(), D === null && (D = G()); D !== null; )
+                      S.push(D), (D = V()), D === null && (D = G());
                     S !== null
-                      ? ((M = K()),
-                        M === null && (M = z),
-                        M !== null
+                      ? ((D = K()),
+                        D === null && (D = z),
+                        D !== null
                           ? ((T = t),
-                            (a = I2(a, S, M)),
+                            (a = I2(a, S, D)),
                             a === null && (o = t),
                             (t = a))
                           : ((o = t), (t = k)))
@@ -5998,8 +5998,8 @@ var commonjsGlobal =
                 return (
                   (t = o),
                   w.charCodeAt(o) === 94
-                    ? ((a = M0), o++)
-                    : ((a = null), R === 0 && $(D0)),
+                    ? ((a = D0), o++)
+                    : ((a = null), R === 0 && $(M0)),
                   a !== null && ((T = t), (a = F2())),
                   a === null && (o = t),
                   (t = a),
@@ -6072,7 +6072,7 @@ var commonjsGlobal =
                 );
               }
               function h2() {
-                var t, a, b, S, M, B;
+                var t, a, b, S, D, B;
                 return (
                   (t = o),
                   w.charCodeAt(o) === 123
@@ -6085,14 +6085,14 @@ var commonjsGlobal =
                             ? ((S = X2), o++)
                             : ((S = null), R === 0 && $(J2)),
                           S !== null
-                            ? ((M = Y()),
-                              M !== null
+                            ? ((D = Y()),
+                              D !== null
                                 ? (w.charCodeAt(o) === 125
                                     ? ((B = H0), o++)
                                     : ((B = null), R === 0 && $(L0)),
                                   B !== null
                                     ? ((T = t),
-                                      (a = W2(b, M)),
+                                      (a = W2(b, D)),
                                       a === null && (o = t),
                                       (t = a))
                                     : ((o = t), (t = k)))
@@ -6309,7 +6309,7 @@ var commonjsGlobal =
                 );
               }
               function R2() {
-                var t, a, b, S, M;
+                var t, a, b, S, D;
                 if (
                   (R++,
                   (t = o),
@@ -6320,22 +6320,22 @@ var commonjsGlobal =
                 )
                   if (
                     (w.charCodeAt(o) === 94
-                      ? ((b = M0), o++)
-                      : ((b = null), R === 0 && $(D0)),
+                      ? ((b = D0), o++)
+                      : ((b = null), R === 0 && $(M0)),
                     b === null && (b = z),
                     b !== null)
                   ) {
                     for (
-                      S = [], M = h0(), M === null && (M = Q());
-                      M !== null;
+                      S = [], D = h0(), D === null && (D = Q());
+                      D !== null;
 
                     )
-                      S.push(M), (M = h0()), M === null && (M = Q());
+                      S.push(D), (D = h0()), D === null && (D = Q());
                     S !== null
                       ? (w.charCodeAt(o) === 93
-                          ? ((M = Ee), o++)
-                          : ((M = null), R === 0 && $(we)),
-                        M !== null
+                          ? ((D = Ee), o++)
+                          : ((D = null), R === 0 && $(we)),
+                        D !== null
                           ? ((T = t),
                             (a = Re(b, S)),
                             a === null && (o = t),
@@ -6449,8 +6449,8 @@ var commonjsGlobal =
                 return (
                   (t = o),
                   w.charCodeAt(o) === 46
-                    ? ((a = Me), o++)
-                    : ((a = null), R === 0 && $(De)),
+                    ? ((a = De), o++)
+                    : ((a = null), R === 0 && $(Me)),
                   a !== null && ((T = t), (a = He())),
                   a === null && (o = t),
                   (t = a),
@@ -6476,9 +6476,9 @@ var commonjsGlobal =
               function P2() {
                 var t;
                 return (
-                  (t = M2()),
+                  (t = D2()),
                   t === null &&
-                    ((t = D2()),
+                    ((t = M2()),
                     t === null &&
                       ((t = R0()),
                       t === null &&
@@ -6532,7 +6532,7 @@ var commonjsGlobal =
                   t
                 );
               }
-              function M2() {
+              function D2() {
                 var t, a;
                 return (
                   (t = o),
@@ -6545,7 +6545,7 @@ var commonjsGlobal =
                   t
                 );
               }
-              function D2() {
+              function M2() {
                 var t, a;
                 return (
                   (t = o),
@@ -6866,8 +6866,8 @@ var commonjsGlobal =
                 I2 = function (t, a, b) {
                   return new u([t].concat(a).concat([b]));
                 },
-                M0 = "^",
-                D0 = '"^"',
+                D0 = "^",
+                M0 = '"^"',
                 F2 = function () {
                   return new r("start");
                 },
@@ -6965,8 +6965,8 @@ var commonjsGlobal =
                 c0 = function (t) {
                   return new y(t);
                 },
-                Me = ".",
-                De = '"."',
+                De = ".",
+                Me = '"."',
                 He = function () {
                   return new r("any-character");
                 },
@@ -7100,7 +7100,7 @@ var commonjsGlobal =
               throw (
                 (i0(u0),
                 (T = Math.max(o, a0)),
-                new D(
+                new M(
                   u0,
                   T < w.length ? w.charAt(T) : null,
                   T,
@@ -7109,7 +7109,7 @@ var commonjsGlobal =
                 ))
               );
             }
-            return P(D, Error), { SyntaxError: D, parse: F };
+            return P(M, Error), { SyntaxError: M, parse: F };
           })(),
           O = 1,
           L = {};
@@ -7232,9 +7232,9 @@ var commonjsGlobal =
                   case "range":
                     for (
                       var P = this.gen(L.start, g, C).charCodeAt(),
-                        D = this.gen(L.end, g, C).charCodeAt(),
+                        M = this.gen(L.end, g, C).charCodeAt(),
                         F = P;
-                      F <= D;
+                      F <= M;
                       F++
                     )
                       A = A.replace(String.fromCharCode(F), "");
@@ -7819,18 +7819,18 @@ var commonjsGlobal =
               function P(H) {
                 for (var N = 0; N < d.length; N++)
                   try {
-                    O[d[N]] = D[d[N]];
+                    O[d[N]] = M[d[N]];
                   } catch {}
                 O.dispatchEvent(new Event(H.type));
               }
               if (!L) {
-                var D = p();
-                this.custom.xhr = D;
-                for (var F = 0; F < c.length; F++) D.addEventListener(c[F], P);
-                C ? D.open(E, m, g, C, A) : D.open(E, m, g);
+                var M = p();
+                this.custom.xhr = M;
+                for (var F = 0; F < c.length; F++) M.addEventListener(c[F], P);
+                C ? M.open(E, m, g, C, A) : M.open(E, m, g);
                 for (var w = 0; w < f.length; w++)
                   try {
-                    D[f[w]] = O[f[w]];
+                    M[f[w]] = O[f[w]];
                   } catch {}
                 return;
               }
@@ -7985,7 +7985,6 @@ var commonjsGlobal =
     ]);
   });
 })(mock);
-var Mock = mock.exports;
 function e(n) {
   return {
     all: (n = n || new Map()),
@@ -9023,4 +9022,4 @@ axios$1.isAxiosError = isAxiosError;
 axios$2.exports = axios$1;
 axios$2.exports.default = axios$1;
 var axios = axios$2.exports;
-export { Mock as M, axios as a, e };
+export { axios as a, e, mock as m };

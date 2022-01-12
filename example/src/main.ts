@@ -2,6 +2,7 @@ import "./style.scss";
 import "./mock";
 import oi from "once-init";
 import request from "./request";
+(window as unknown as Window & { oi: Function }).oi = oi;
 
 const commonRequest = request.count;
 const oiRequest = oi(request.count).refresh;

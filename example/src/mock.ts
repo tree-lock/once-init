@@ -1,5 +1,5 @@
-import Mock from "mockjs";
-Mock.setup({
+import { setup, mock, Random } from "mockjs";
+setup({
   timeout: "1200-1600",
 });
-Mock.mock("/example", "get", () => Mock.Random.int(0, 10000));
+mock("/example", "get", () => Random.int(0, 10000));

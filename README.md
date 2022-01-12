@@ -18,6 +18,7 @@
 
 1. **The `Promise Function` packaged by `OnceInit` will never be executed twice at the same time**
 2. If A `Promise Function` is called before previous `Promise Function` resolved， It will share the response of the previous one.
+3. [Example Site](https://darkxmo.github.io/once-init)
 
 ## Install
 

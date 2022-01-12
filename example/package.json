@@ -4,7 +4,8 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "deploy": "npm run build && rimraf ../docs && cp -rf dist ../docs"
   },
   "dependencies": {
     "@types/mockjs": "^1.0.5",
@@ -15,5 +16,8 @@
     "sass": "^1.47.0",
     "typescript": "^4.4.4",
     "vite": "^2.7.2"
+  },
+  "devDependencies": {
+    "rimraf": "^3.0.2"
   }
 }

@@ -20,6 +20,7 @@
 
 1. **`OnceInit` 封装的 `Promise Function` ，永远不会在同一时间被执行两次。**
 2. 如果上一个 `Promise Function` 没有执行完成就调用了下一个 `Promise Function` ，那么下一个 `Promise Function` 将共享上一个`Promise Function` 的 `Promise`。
+3. [示例网站](https://darkxmo.github.io/once-init)
 
 ## Install
 
