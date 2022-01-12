@@ -1,9 +1,23 @@
-import "./style.css";
-import "./oi";
+import "./style.scss";
+import "./mock";
+import oi from "once-init";
+import request from "./request";
 
-const app = document.querySelector<HTMLDivElement>("#app")!;
+const commonRequest = request.count;
+const oiRequest = oi(request.count).refresh;
 
-app.innerHTML = `
-  <h1>Hello Vite!</h1>
-  <a href="https://vitejs.dev/guide/features.html" target="_blank">Documentation</a>
-`;
+const commonBtn = document.getElementById("common") as HTMLButtonElement;
+const oiBtn = document.getElementById("oi") as HTMLButtonElement;
+
+commonBtn.addEventListener("click", () =>
+  commonRequest().then((res) => {
+    (document.getElementById("value") as HTMLSpanElement).innerText =
+      res.toString();
+  })
+);
+oiBtn.addEventListener("click", () =>
+  oiRequest().then((res) => {
+    (document.getElementById("value") as HTMLSpanElement).innerText =
+      res.toString();
+  })
+);

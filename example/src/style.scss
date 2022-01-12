@@ -1,0 +1,70 @@
+body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: #f3f6f8;
+  div.card {
+    display: flex;
+    background: #fff;
+    padding: 2rem;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+    > p.tip {
+      color: gray;
+    }
+
+    > div.operations {
+      > button {
+        box-sizing: border-box;
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+        line-height: 1;
+        height: 32px;
+        white-space: nowrap;
+        cursor: pointer;
+        margin: 0;
+        transition: 0.1s;
+        user-select: none;
+        padding: 8px 15px;
+        border-radius: 10px;
+
+        font-size: 16px;
+        color: #fff;
+      }
+      > button.common {
+        border: 0 solid #409eff;
+        background: #409eff;
+        &:hover {
+          border-color: #66b1ff;
+          background: #66b1ff;
+        }
+        &:active {
+          border-color: rgb(58, 142, 230);
+          background: rgb(58, 142, 230);
+        }
+      }
+      > button.oi {
+        border: 0 solid #67c23a;
+        background: #67c23a;
+        &:hover {
+          border-color: #85ce61;
+          background: #85ce61;
+        }
+        &:active {
+          border-color: rgb(93, 175, 52);
+          background: rgb(93, 175, 52);
+        }
+      }
+    }
+    span#count {
+      color: red;
+    }
+
+    span#status {
+      color: purple;
+    }
+  }
+}

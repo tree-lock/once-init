@@ -21,7 +21,6 @@ export declare abstract class OnceInit<
 > {
   protected observe: T | undefined;
   protected promise: Promise<G> | null;
-  constructor();
   protected abstract initPromise(...param: P): Promise<G>;
   protected factory(raw: G, observe: T | void): void | T;
   protected initialized: boolean;
