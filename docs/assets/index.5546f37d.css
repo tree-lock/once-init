@@ -1,0 +1,65 @@
+body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: #f3f6f8;
+}
+body div.card {
+  display: flex;
+  background: #fff;
+  padding: 2rem;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  box-shadow: 0 2px 12px #0000001a;
+}
+body div.card > p.tip {
+  color: gray;
+}
+body div.card > div.operations > button {
+  box-sizing: border-box;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  line-height: 1;
+  height: 32px;
+  white-space: nowrap;
+  cursor: pointer;
+  margin: 0;
+  transition: 0.1s;
+  user-select: none;
+  padding: 8px 15px;
+  border-radius: 10px;
+  font-size: 16px;
+  color: #fff;
+}
+body div.card > div.operations > button.common {
+  border: 0 solid #409eff;
+  background: #409eff;
+}
+body div.card > div.operations > button.common:hover {
+  border-color: #66b1ff;
+  background: #66b1ff;
+}
+body div.card > div.operations > button.common:active {
+  border-color: #3a8ee6;
+  background: #3a8ee6;
+}
+body div.card > div.operations > button.oi {
+  border: 0 solid #67c23a;
+  background: #67c23a;
+}
+body div.card > div.operations > button.oi:hover {
+  border-color: #85ce61;
+  background: #85ce61;
+}
+body div.card > div.operations > button.oi:active {
+  border-color: #5daf34;
+  background: #5daf34;
+}
+body div.card span#count {
+  color: red;
+}
+body div.card span#status {
+  color: purple;
+}

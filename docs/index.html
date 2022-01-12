@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/assets/favicon.17e50649.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vite App</title>
+    <script type="module" crossorigin src="/assets/index.6a00f543.js"></script>
+    <link rel="modulepreload" href="/assets/vendor.01000a7d.js">
+    <link rel="stylesheet" href="/assets/index.5546f37d.css">
+  </head>
+  <body>
+    <h1 class="title">
+      Hello, <a href="https://github.com/darkXmo/once-init">once-init</a>
+    </h1>
+    <div class="card">
+      <h3>Open chrome devtool and check the console.</h3>
+      <p class="tip">
+        Due to the request is intercepted by mock, you cannot check XHR request
+        at network panel
+      </p>
+      <h4>Click button frequently.</h4>
+      <div class="operations">
+        <span>Send Request by</span>
+        <button id="common" class="common">common axios</button>
+        /
+        <button id="oi" class="oi">oi packaged axios</button>
+      </div>
+      <p>Request Status [ <span id="status">sleep</span> ]</p>
+      <p class="content">value: <span class="value" id="value">0</span></p>
+      <p>Request Sent Count <span id="count">0</span></p>
+    </div>
+
+    
+  </body>
+</html>
