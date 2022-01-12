@@ -2,38 +2,22 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/assets/favicon.17e50649.svg" />
+    <link rel="icon" type="image/svg+xml" href="/once-init/assets/favicon.17e50649.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Vite App</title>
-    <script type="module" crossorigin src="/assets/index.ddba9c09.js"></script>
-    <link rel="modulepreload" href="/assets/vendor.44463c4b.js">
-    <link rel="stylesheet" href="/assets/index.5546f37d.css">
+    <script type="module" crossorigin src="/once-init/assets/index.a281be14.js"></script>
+    <link rel="modulepreload" href="/once-init/assets/vendor.1013f282.js">
+    <link rel="stylesheet" href="/once-init/assets/index.49ace441.css">
   </head>
   <body>
     <h1 class="title">
       Hello, <a href="https://github.com/darkXmo/once-init">once-init</a>
     </h1>
-    <div class="card">
-      <h3>Open chrome devtool and check the console.</h3>
-      <p class="tip">
-        Due to the request is intercepted by mockjs, you cannot check XHR
-        request at network panel
-      </p>
-      <p class="tip">window.oi is accessible at console panel in devtool.</p>
-      <h4>Click button frequently.</h4>
-      <div class="operations">
-        <span>Send Request by</span>
-        <button id="common" class="common">common request</button>
-        /
-        <button id="oi" class="oi">oi packaged request</button>
-      </div>
-      <p>Request Status [ <span id="status">sleep</span> ]</p>
-      <p class="content">value: <span class="value" id="value">0</span></p>
-      <p>Request Sent Count <span id="count">0</span></p>
-      <p class="tip" style="text-decoration: underline">
-        oi packaged request will not be sent if request status pending
-      </p>
+    <div class="language">
+      <span>中文</span>
+      <span>English</span>
     </div>
+    <div class="card" id="app"></div>
 
     
   </body>

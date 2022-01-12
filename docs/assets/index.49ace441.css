@@ -4,6 +4,16 @@ body {
   align-items: center;
   background: #f3f6f8;
 }
+body div.language {
+  margin-bottom: 1rem;
+  display: flex;
+  gap: 3rem;
+}
+body div.language > span:hover {
+  color: #87ceeb;
+  text-decoration: underline;
+  cursor: pointer;
+}
 body div.card {
   display: flex;
   background: #fff;
@@ -12,6 +22,8 @@ body div.card {
   align-items: center;
   gap: 1rem;
   box-shadow: 0 2px 12px #0000001a;
+  transform-style: preserve-3d;
+  transition: 1s;
 }
 body div.card > p.tip {
   color: gray;
