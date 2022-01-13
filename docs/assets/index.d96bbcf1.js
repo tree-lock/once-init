@@ -1,13 +1,13 @@
-import { e as y, a as v, m as u } from "./vendor.87ca12ed.js";
-const B = function () {
+import { e as E, a as y, m as u } from "./vendor.f8cb4ef9.js";
+const v = function () {
   const e = document.createElement("link").relList;
   if (e && e.supports && e.supports("modulepreload")) return;
-  for (const n of document.querySelectorAll('link[rel="modulepreload"]')) r(n);
+  for (const n of document.querySelectorAll('link[rel="modulepreload"]')) i(n);
   new MutationObserver((n) => {
     for (const o of n)
       if (o.type === "childList")
-        for (const i of o.addedNodes)
-          i.tagName === "LINK" && i.rel === "modulepreload" && r(i);
+        for (const r of o.addedNodes)
+          r.tagName === "LINK" && r.rel === "modulepreload" && i(r);
   }).observe(document, { childList: !0, subtree: !0 });
   function s(n) {
     const o = {};
@@ -22,15 +22,15 @@ const B = function () {
       o
     );
   }
-  function r(n) {
+  function i(n) {
     if (n.ep) return;
     n.ep = !0;
     const o = s(n);
     fetch(n.href, o);
   }
 };
-B();
-function d() {
+v();
+function m() {
   var t = [].slice.call(arguments);
   if (!(t[0] instanceof Function) || t.length > 3 || t.length < 1)
     throw new Error("Arguments of oi is not supported");
@@ -52,7 +52,7 @@ function d() {
     }
     {
       const n = t[1];
-      return new (class extends m {
+      return new (class extends h {
         constructor(...o) {
           super(...o), (this.initPromise = e);
         }
@@ -60,19 +60,19 @@ function d() {
     }
   }
   const s = t[1],
-    r = t[2];
-  return new (class extends m {
+    i = t[2];
+  return new (class extends h {
     constructor(...n) {
       super(...n), (this.initPromise = e), (this.factory = s);
     }
-  })(r);
+  })(i);
 }
 class c {
   constructor() {
     (this.observe = void 0),
       (this.promise = null),
       (this.initialized = !1),
-      (this.emitter = y()),
+      (this.emitter = E()),
       (this.refresh = (() => {
         var e = this;
         return function () {
@@ -83,9 +83,9 @@ class c {
             {
               (e.promise = e.initPromise(...[].slice.call(s))),
                 e.emitter.emit("loading", !0);
-              const r = e.factory;
+              const i = e.factory;
               return Promise.resolve(e.promise).then(function (n) {
-                const o = r.call(e, n, e.observe);
+                const o = i.call(e, n, e.observe);
                 return (
                   o != null && (e.observe = o),
                   (e.promise = null),
@@ -112,7 +112,7 @@ class c {
   }
   init() {
     try {
-      let r = function () {
+      let i = function () {
         return e.observe;
       };
       const e = this,
@@ -124,7 +124,7 @@ class c {
             function () {}
           );
       })();
-      return Promise.resolve(n && n.then ? n.then(r) : r());
+      return Promise.resolve(n && n.then ? n.then(i) : i());
     } catch (e) {
       return Promise.reject(e);
     }
@@ -133,7 +133,7 @@ class c {
     this.emitter.on("loading", e);
   }
 }
-class m extends c {
+class h extends c {
   get target() {
     return (
       this.initialized || this.initPromise.length !== 0 || this.refresh(),
@@ -144,8 +144,8 @@ class m extends c {
     super(), (this.observe = e);
   }
 }
-const l = v.create();
-let F = 0;
+const l = y.create();
+let B = 0;
 l.interceptors.request.use(
   (t) => {
     console.log(
@@ -154,7 +154,7 @@ l.interceptors.request.use(
       t.url
     );
     const s = document.getElementById("count");
-    return (s.innerText = (++F).toString()), t;
+    return (s.innerText = (++B).toString()), t;
   },
   (t) => Promise.reject(t)
 );
@@ -169,40 +169,52 @@ l.interceptors.response.use(
   )
 );
 let a = 0;
-const x = async () => {
+const F = async () => {
   const t = document.getElementById("status");
   (t.innerText = "pending"), a++;
   const e = await l.get("/example");
   return a--, a === 0 && (t.innerText = "done"), e.data;
 };
-var h = { count: x };
-window.oi = d;
-const P = h.count,
-  b = d(h.count).refresh,
-  w = document.getElementById("common"),
-  A = document.getElementById("oi");
-w.addEventListener("click", () =>
-  P().then((t) => {
+var p = { count: F };
+window.oi = m;
+const b = p.count,
+  x = m(p.count).refresh,
+  k = document.getElementById("common"),
+  w = document.getElementById("oi");
+k.addEventListener("click", () =>
+  b().then((t) => {
     document.getElementById("value").innerText = t.toString();
   })
 );
-A.addEventListener("click", () =>
-  b().then((t) => {
+w.addEventListener("click", () =>
+  x().then((t) => {
     document.getElementById("value").innerText = t.toString();
   })
 );
 u.exports.setup({ timeout: "1200-1600" });
 u.exports.mock("/example", "get", () => u.exports.Random.int(0, 1e4));
-const p = document.getElementById("info"),
+const d = document.getElementById("info"),
   f = document.getElementById("app"),
   g = document.getElementById("content"),
-  C = document.getElementById("chinese"),
-  k = document.getElementById("english"),
-  E = () => {
+  P = document.getElementById("chinese"),
+  C = document.getElementById("english");
+d.innerHTML = `
+      <h3>Open chrome devtool and check the console.</h3>
+      <p class="tip">
+        Due to the request is intercepted by mockjs, you cannot check XHR
+        request at network panel
+      </p>
+      <p class="tip">window.oi is accessible at console panel in devtool.</p>
+      <h4>Try to Click button frequently, Check the Difference.</h4>
+      <p class="tip" style="text-decoration: underline">
+        oi packaged request will not be sent if request status pending
+      </p>
+`;
+const A = () => {
     (f.className = ""),
       setTimeout(() => {
         (g.className = ""),
-          (p.innerHTML = `
+          (d.innerHTML = `
       <h3>Open chrome devtool and check the console.</h3>
       <p class="tip">
         Due to the request is intercepted by mockjs, you cannot check XHR
@@ -215,13 +227,12 @@ const p = document.getElementById("info"),
       </p>
 `);
       }, 700);
-  };
-E();
-const I = () => {
-  (f.className = "ani"),
-    setTimeout(() => {
-      (g.className = "ani"),
-        (p.innerHTML = `
+  },
+  q = () => {
+    (f.className = "ani"),
+      setTimeout(() => {
+        (g.className = "ani"),
+          (d.innerHTML = `
       <h3>\u6253\u5F00\u6D4F\u89C8\u5668\u5F00\u53D1\u5DE5\u5177\u5E76\u68C0\u67E5\u63A7\u5236\u53F0 console</h3>
       <p class="tip">
         \u7531\u4E8E\u8BF7\u6C42\u88ABMockjs\u52AB\u6301, \u5F00\u53D1\u5DE5\u5177\u7684Network\u9762\u677F\u4E0A\u4E0D\u4F1A\u663E\u793A\u53D1\u51FA\u7684\u8BF7\u6C42\u3002
@@ -232,7 +243,7 @@ const I = () => {
         oi\u5C01\u88C5\u7684\u8BF7\u6C42\u5728\u8BF7\u6C42\u7684pending\u9636\u6BB5\u4E0D\u4F1A\u4E8C\u6B21\u89E6\u53D1\u3002
       </p>
 `);
-    }, 700);
-};
-k.addEventListener("click", E);
-C.addEventListener("click", I);
+      }, 700);
+  };
+C.addEventListener("click", A);
+P.addEventListener("click", q);

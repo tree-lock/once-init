@@ -8,6 +8,19 @@ const contentEle = document.getElementById("content") as HTMLDivElement;
 const chineseEle = document.getElementById("chinese") as HTMLSpanElement;
 const englishEle = document.getElementById("english") as HTMLSpanElement;
 
+info.innerHTML = `
+      <h3>Open chrome devtool and check the console.</h3>
+      <p class="tip">
+        Due to the request is intercepted by mockjs, you cannot check XHR
+        request at network panel
+      </p>
+      <p class="tip">window.oi is accessible at console panel in devtool.</p>
+      <h4>Try to Click button frequently, Check the Difference.</h4>
+      <p class="tip" style="text-decoration: underline">
+        oi packaged request will not be sent if request status pending
+      </p>
+`;
+
 const setEnglish = () => {
   cardEle.className = "";
   setTimeout(() => {
@@ -27,7 +40,6 @@ const setEnglish = () => {
   }, 700);
 };
 
-setEnglish();
 const setChinese = () => {
   cardEle.className = "ani";
   setTimeout(() => {
