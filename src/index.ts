@@ -1,4 +1,4 @@
-import mitt from "mitt";
+import mitt, { Emitter } from "mitt";
 import _ from "lodash";
 
 interface Options<P> {
@@ -62,25 +62,9 @@ export default function oi<T, G = T, P extends Array<any> = void[]>(
 export abstract class OnceInit<T, G = T, P extends Array<any> = void[]> {
   protected observe: T | undefined;
   protected promise: Promise<G> | null = null;
-  protected observes: Map<P, T> | undefined;
-  protected promises: Map<P, Promise<G>> | undefined;
   protected abstract initPromise(...param: P): Promise<G>;
   protected factory(raw: G, observe: T | void): void | T {
     return (observe = raw as unknown as T);
-  }
-  protected paramsUsed: P[] = [];
-  protected options: Options<P> = {
-    paramDisc: false,
-  };
-
-  constructor(options?: Options<P>) {
-    if (options) {
-      Object.assign(this.options, options);
-      if (options.paramDisc) {
-        this.observes = new Map<P, T>();
-        this.promises = new Map<P, Promise<G>>();
-      }
-    }
   }
   protected initialized: boolean = false;
   protected emitter = mitt<{
@@ -91,19 +75,9 @@ export abstract class OnceInit<T, G = T, P extends Array<any> = void[]> {
     if (!this.initialized && this.initPromise.length === 0) {
       this.refresh(...([] as unknown as P));
     }
-    // 如果区分参数，target本质上已经失去效用了，
-    if (this.observe instanceof Map) {
-      throw new Error("target is useless while options.paramDisc being true");
-    }
     return this.observe;
   }
   async init(...param: P): Promise<G | T> {
-    if (this.observe instanceof Map && this.options.paramDisc) {
-      if (this.promises && this.observes && this.promises.has(param)) {
-        const promise = this.promises.get(param) as Promise<G>;
-        return promise.finally(() => this.observes?.get(param) as T);
-      }
-    }
     if (this.promise) {
       return this.promise.finally(() => this.observe);
     }
@@ -137,81 +111,78 @@ export abstract class OnceInit<T, G = T, P extends Array<any> = void[]> {
   }
 }
 
+/** 区分参数的OnceInit */
 export abstract class OnceInitDis<T, G = T, P extends Array<any> = void[]> {
-  protected observe: T | undefined;
-  protected promise: Promise<G> | null = null;
-  protected observes: Map<P, T> | undefined;
-  protected promises: Map<P, Promise<G>> | undefined;
+  protected observes: Map<P, T> = new Map<P, T>();
+  protected promises: Map<P, Promise<G> | null> = new Map<P, Promise<G>>();
+  protected initializeds: Map<P, boolean> = new Map<P, boolean>();
   protected abstract initPromise(...param: P): Promise<G>;
   protected factory(raw: G, observe: T | void): void | T {
     return (observe = raw as unknown as T);
   }
   protected paramsUsed: P[] = [];
-  protected options: Options<P> = {
-    paramDisc: false,
-  };
+  protected emitters: Map<
+    P,
+    Emitter<{
+      loading: boolean;
+    }>
+  > = new Map<
+    P,
+    Emitter<{
+      loading: boolean;
+    }>
+  >();
 
-  constructor(options?: Options<P>) {
-    if (options) {
-      Object.assign(this.options, options);
-      if (options.paramDisc) {
-        this.observes = new Map<P, T>();
-        this.promises = new Map<P, Promise<G>>();
-      }
-    }
-  }
-  protected initialized: boolean = false;
-  protected emitter = mitt<{
-    loading: boolean;
-  }>();
-
-  get target(): T | undefined {
-    if (!this.initialized && this.initPromise.length === 0) {
-      this.refresh(...([] as unknown as P));
-    }
-    // 如果区分参数，target本质上已经失去效用了，
-    if (this.observe instanceof Map) {
-      throw new Error("target is useless while options.paramDisc being true");
-    }
-    return this.observe;
-  }
   async init(...param: P): Promise<G | T> {
-    if (this.observe instanceof Map && this.options.paramDisc) {
-      if (this.promises && this.observes && this.promises.has(param)) {
-        const promise = this.promises.get(param) as Promise<G>;
-        return promise.finally(() => this.observes?.get(param) as T);
-      }
+    if (this.promises.has(param)) {
+      const promise = this.promises.get(param) as Promise<G>;
+      return promise.finally(() => this.observes.get(param) as T);
     }
-    if (this.promise) {
-      return this.promise.finally(() => this.observe);
-    }
-    if (!this.initialized) {
+    if (!this.initializeds.has(param)) {
       await this.refresh(...param);
     }
-    return this.observe as T;
+    return this.observes.get(param) as T;
   }
-
+  // 当前方法是浅比较
   refresh = async (...param: P): Promise<G | T> => {
-    if (!this.promise) {
-      this.promise = this.initPromise(...param);
-      this.emitter.emit("loading", true);
-      const ans = this.factory(await this.promise, this.observe);
-      if (typeof ans !== "undefined" && ans !== null) {
-        this.observe = ans;
+    if (!this.promises.get(param)) {
+      const promise = this.initPromise(...param);
+      this.promises.set(param, promise);
+      if (this.emitters.has(param)) {
+        this.emitters.get(param)?.emit("loading", true);
+      } else {
+        this.emitters.set(
+          param,
+          mitt<{
+            loading: boolean;
+          }>()
+        );
+        this.emitters.get(param)?.emit("loading", true);
       }
-      this.promise = null;
-      this.initialized = true;
-      this.emitter.emit("loading", false);
-      return this.observe as T;
+      const ans = this.factory(await promise, this.observes.get(param));
+      if (typeof ans !== "undefined" && ans !== null) {
+        this.observes.set(param, ans);
+      }
+      this.promises.set(param, null);
+      this.initializeds.set(param, true);
+      this.emitters.get(param)?.emit("loading", false);
+      return this.observes.get(param) as T;
     } else {
-      return this.promise.finally(() => {
-        return this.observe;
+      const promise = this.promises.get(param) as Promise<G>;
+      return promise.finally(() => {
+        return this.observes.get(param) as T;
       });
     }
   };
 
-  onLoading(handler: (event: boolean) => void) {
-    this.emitter.on("loading", handler);
+  onLoading(param: P, handler: (event: boolean) => void) {
+    if (!this.emitters.has(param)) {
+      this.emitters.set(param, mitt<{ loading: boolean }>());
+    }
+    const emitter = this.emitters.get(param) as Emitter<{
+      loading: boolean;
+    }>;
+    emitter.on("loading", handler);
   }
 }
 
