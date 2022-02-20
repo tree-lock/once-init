@@ -109,7 +109,7 @@ export class OnceInit<T, P extends Array<any> = []> {
   }
 
   /**
-   * 等待param对应的promise执行结束，如果当前没有只在执行的对应的promise，则直接返回
+   * 等待param对应的promise执行结束，如果当前没有正在执行的对应的promise，将不会执行等待
    * 否则等待执行直到没有对应的promise
    * @param param
    */
