@@ -8,7 +8,8 @@ declare global {
 window.oi = oi;
 
 const commonRequest = request.count;
-const oiRequest = oi(request.count).refresh;
+const oiItem = oi(request.count);
+const oiRequest = oiItem.refresh;
 
 const commonBtn = document.getElementById("common") as HTMLButtonElement;
 const oiBtn = document.getElementById("oi") as HTMLButtonElement;

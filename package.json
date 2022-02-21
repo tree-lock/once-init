@@ -1,6 +1,6 @@
 {
   "name": "once-init",
-  "version": "0.8.1",
+  "version": "1.0.0-beta.1",
   "description": "Init a target by promise only once.",
   "repository": "git@github.com:darkXmo/once-init.git",
   "author": "Xmo <18851989097@163.com>",
@@ -14,9 +14,7 @@
   "homepage": "https://github.com/darkXmo/once-init",
   "license": "MIT",
   "dependencies": {
-    "@types/lodash": "^4.14.178",
-    "lodash": "^4.17.21",
-    "mitt": "^3.0.0"
+    "lodash": "^4.17.21"
   },
   "devDependencies": {
     "@babel/core": "^7.0.0-0",
@@ -24,11 +22,12 @@
     "@babel/preset-typescript": "^7.15.0",
     "@commitlint/cli": "^13.1.0",
     "@commitlint/config-conventional": "^13.1.0",
+    "@types/lodash": "^4.14.178",
+    "@types/node": "^17.0.18",
     "cz-conventional-changelog": "^3.3.0",
     "git-cz": "^4.8.0",
     "husky": "^7.0.0",
     "lint-staged": "^11.1.2",
-    "microbundle": "^0.14.2",
     "prettier": "2.4.1",
     "rimraf": "^3.0.2",
     "typescript": "^4.4.3"
@@ -45,27 +44,30 @@
     ],
     "*.{js,ts,css,md}": "prettier --write --ignore-unknown"
   },
-  "module": "dist/once-init.mjs",
-  "main": "dist/once-init.js",
-  "jsnext:main": "dist/once-init.mjs",
-  "umd:main": "dist/once-init.umd.js",
+  "module": "dist/esm/once-init.mjs",
+  "main": "dist/cjs/once-init.js",
+  "jsnext:main": "dist/esnext/once-init.js",
+  "umd:main": "dist/umd/once-init.js",
   "source": "src/index.ts",
-  "typings": "index.d.ts",
+  "typings": "dist/esm/index.d.ts",
   "exports": {
-    "import": "./dist/once-init.mjs",
-    "require": "./dist/once-init.js",
-    "default": "./dist/once-init.mjs"
+    "import": "./dist/esm/index.js",
+    "require": "./dist/cjs/index.js",
+    "default": "./dist/esm/index.mjs"
   },
   "files": [
-    "dist",
-    "index.d.ts"
+    "dist"
   ],
   "scripts": {
     "commit": "git add . && git status && git-cz",
     "prepare": "husky install",
-    "bundle": "microbundle -f es,cjs,umd",
-    "build": "rimraf dist && npm run bundle",
-    "clean": "rm -rf dist pnpm* yarn.* node_modules package-*"
+    "build": "npm run tsc",
+    "tsc": "rimraf dist && npm run build:esm && npm run build:cjs && npm run build:umd && npm run build:jsnext",
+    "build:esm": "tsc --module es2015 --outDir dist/esm -d",
+    "build:cjs": "tsc --module commonjs --outDir dist/cjs",
+    "build:umd": "tsc --module umd --outDir dist/umd",
+    "build:jsnext": "tsc --module esnext --outDir dist/esnext",
+    "clean": "rimraf dist pnpm* yarn.* node_modules package-*"
   },
   "config": {
     "commitizen": {
