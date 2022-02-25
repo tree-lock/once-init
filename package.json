@@ -44,10 +44,10 @@
     ],
     "*.{js,ts,css,md}": "prettier --write --ignore-unknown"
   },
-  "module": "dist/esm/once-init.mjs",
-  "main": "dist/cjs/once-init.js",
-  "jsnext:main": "dist/esnext/once-init.js",
-  "umd:main": "dist/umd/once-init.js",
+  "module": "dist/esm/index.mjs",
+  "main": "dist/cjs/index.js",
+  "jsnext:main": "dist/esnext/index.js",
+  "umd:main": "dist/umd/index.js",
   "source": "src/index.ts",
   "typings": "dist/esm/index.d.ts",
   "exports": {

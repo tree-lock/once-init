@@ -4,6 +4,7 @@
  * 2. 添加了参数区分，现在，允许通过参数来划分不同的Promise Function，参数通过`loadsh`来进行区分。
  * 3. 添加了 强制执行方法exceed() 和 等待执行方法wait()
  * 4. 同步方法为get()，如果值在returnValue中，则返回，否则返回undefined，同步执行不再主动触发promise。
+ * 5. send、request和refresh是同一个方法，定义它们是为了方便更好的语义化。
  */
 import { isEqual } from "lodash";
 export class OnceInit<T, P extends Array<any> = []> {
@@ -73,6 +74,9 @@ export class OnceInit<T, P extends Array<any> = []> {
       return await promise;
     }
   };
+
+  send = this.refresh;
+  request = this.refresh;
 
   get = (...param: P): T | undefined => {
     const index = this.processedParams.findIndex((item) =>
