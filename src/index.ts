@@ -5,14 +5,11 @@ export default function oi<T, P extends Array<any>>(
   promise: (...param: P) => Promise<T>
 ): OnceInit<T, P>;
 
-export default function oi<T, P extends Array<any>>(obj: T): K<T>;
-
 export default function oi<T, P extends Array<any> = []>(...args: any[]) {
   if (args[0] instanceof Function) {
     const promise = args[0] as (...param: P) => Promise<T>;
     return new (class extends OnceInit<T, P> {})(promise);
   }
-  return oiObject(args[0]);
 }
 
 type K<T> = {
@@ -21,7 +18,14 @@ type K<T> = {
     : T[k];
 };
 
-function oiObject<T extends object>(obj: T) {
+/**
+ * 对象的属性如果是方法，都会被OnceInit的refresh封装成Promise方法
+ * 其它属性保留原始状态
+ * 其中oiSource属性指向源对象
+ * @param obj 被封装的对象
+ * @returns
+ */
+export function oiObject<T extends object>(obj: T) {
   const ans: K<T> & { oiSource: T } = {} as any;
   for (let key in obj) {
     if (obj[key] instanceof Function) {

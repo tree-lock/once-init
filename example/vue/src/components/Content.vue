@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import "../api/request";
+import axiosInstance from "../api/request";
+import oi from "once-init";
 </script>
 
 <template>
