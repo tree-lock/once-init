@@ -10,7 +10,7 @@
   "dependencies": {
     "@types/mockjs": "^1.0.6",
     "axios": "^0.26.0",
-    "element-plus": "^2.0.2",
+    "element-plus": "^2.1.8",
     "mockjs": "^1.1.0",
     "once-init": "link:../..",
     "vue": "^3.2.25"

@@ -1,4 +1,11 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+interface TableRow {
+  ID: number;
+  by: "init" | "refresh" | "exceed";
+  time: string;
+  value: number;
+}
+</script>
 
 <template>
   <Page />

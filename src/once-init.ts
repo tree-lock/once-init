@@ -1,9 +1,9 @@
 /**
  * once-init v1.0.0-beta 版本
  * 1. 由于用户可以在Promise Function里自定义相关的状态，`once-init`没有必要画蛇添足，因此取消了target和factory方法，取消了loading加载状态。
- * 2. 添加了参数区分，现在，允许通过参数来划分不同的Promise Function，参数通过`loadsh`来进行区分。
+ * 2. 添加了参数区分，现在，允许通过参数来划分不同的Promise Function，参数通过`lodash.isEqual`来进行区分。
  * 3. 添加了 强制执行方法exceed() 和 等待执行方法wait()
- * 4. 同步方法为get()，如果值在returnValue中，则返回，否则返回undefined，同步执行不再主动触发promise。
+ * 4. 同步方法为get()，如果值在之前初始化过，则返回对应的值，否则返回undefined，同步执行不再主动触发promise。
  * 5. send、request和refresh是同一个方法，定义它们是为了方便更好的语义化。
  */
 import { isEqual } from "lodash";
@@ -20,6 +20,7 @@ export class OnceInit<T, P extends Array<any> = []> {
     this.promiseFunction = initPromise;
   }
 
+  /** 初始化，returnValueMap中对应的参数存在变量，则不会再请求 */
   init = async (...param: P): Promise<T> => {
     // 查看是否在已执行过的参数中
     const index = this.processedParams.findIndex((item) =>
@@ -48,6 +49,7 @@ export class OnceInit<T, P extends Array<any> = []> {
     }
   };
 
+  /** 刷新，如果存在正在执行的对应参数的Promise，则不会创建新的Promise */
   refresh = async (...param: P): Promise<T> => {
     // 查看是否在已执行过的参数中
     const index = this.processedParams.findIndex((item) =>
@@ -78,6 +80,7 @@ export class OnceInit<T, P extends Array<any> = []> {
   send = this.refresh;
   request = this.refresh;
 
+  /** 同步获取值，如果参数存在返回值，则返回，否则返回undefined */
   get = (...param: P): T | undefined => {
     const index = this.processedParams.findIndex((item) =>
       isEqual(item, param)
@@ -86,7 +89,7 @@ export class OnceInit<T, P extends Array<any> = []> {
   };
 
   /**
-   * 强制执行，
+   * 强制执行，无论对应参数的Promise是否正在执行，都创建一个新的promise执行
    * @param param
    * @returns
    */
@@ -100,7 +103,8 @@ export class OnceInit<T, P extends Array<any> = []> {
       return await this.init(...param);
     } else {
       // 在已执行参数中
-      // 无论是否正在执行，都强制进行执行，并覆盖已经在执行的promise
+      // 无论是否正在执行，都强制进行执行，并覆盖在Map中已经在执行的promise
+      // 如果先refresh再马上exceed，会创建两个不同的Promise，返回值也会不同
       const promise = this.promiseFunction(...param);
       // 将promise置入哈希表，设定该参数的promise正在执行
       this.promiseMap.set(index, promise);
@@ -115,6 +119,7 @@ export class OnceInit<T, P extends Array<any> = []> {
   /**
    * 等待param对应的promise执行结束，如果当前没有正在执行的对应的promise，将不会执行等待
    * 否则等待执行直到没有对应的promise
+   * exceed会推迟wait的执行返回
    * @param param
    */
   wait = async (...param: P): Promise<void> => {
