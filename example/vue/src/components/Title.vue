@@ -5,7 +5,7 @@ const count = ref(0);
 <template>
   <div class="title">
     <h1>Once Init</h1>
-    <p>A package that prevents useless promise requests</p>
+    <p>A package prevents unnecessary promise requests</p>
     <div>
       <a href="https://github.com/darkXmo/once-init/blob/main/LICENSE"
         ><img

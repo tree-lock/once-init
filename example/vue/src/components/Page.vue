@@ -1,7 +1,7 @@
 <template>
   <div class="page">
     <Title />
-    <Content />
+    <Init />
   </div>
 </template>
 

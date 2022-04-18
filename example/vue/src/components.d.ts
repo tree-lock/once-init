@@ -7,7 +7,7 @@ declare module "vue" {
     Content: typeof import("./components/Content.vue")["default"];
     ElButton: typeof import("element-plus/es")["ElButton"];
     ElCard: typeof import("element-plus/es")["ElCard"];
-    ElProgress: typeof import("element-plus/es")["ElProgress"];
+    Init: typeof import("./components/Init.vue")["default"];
     Page: typeof import("./components/Page.vue")["default"];
     Title: typeof import("./components/Title.vue")["default"];
   }
