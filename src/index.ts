@@ -21,12 +21,12 @@ type K<T> = {
 /**
  * 对象的属性如果是方法，都会被OnceInit的refresh封装成Promise方法
  * 其它属性保留原始状态
- * 其中oiSource属性指向源对象
+ * 其中oiSource属性指向传入的源对象
  * @param obj 被封装的对象
  * @returns
  */
-export function oiObject<T extends object>(obj: T) {
-  const ans: K<T> & { oiSource: T } = {} as any;
+export function packagedByRefresh<T extends object>(obj: T) {
+  const ans: K<T> & { /** 源对象 */ oiSource: T } = {} as any;
   for (let key in obj) {
     if (obj[key] instanceof Function) {
       ans[key] = oi(obj[key] as any).refresh as any;

@@ -90,6 +90,9 @@ export class OnceInit<T, P extends Array<any> = []> {
 
   /**
    * 强制执行，无论对应参数的Promise是否正在执行，都创建一个新的promise执行
+   * 并覆盖在执行中的promise
+   *
+   * 类似于取消重复的Promise
    * @param param
    * @returns
    */
@@ -114,6 +117,15 @@ export class OnceInit<T, P extends Array<any> = []> {
       });
       return await promise;
     }
+  };
+
+  /**
+   * 执行源函数
+   * @param param
+   * @returns
+   */
+  execute = async (...param: P): Promise<T> => {
+    return this.promiseFunction(...param);
   };
 
   /**
