@@ -29,13 +29,14 @@ export class OnceInit<T, P extends Array<any> = []> {
     if (index === -1) {
       // 如果不在已执行参数中，将参数推入，并且执行
       this.processedParams.push(param);
+      const index = this.processedParams.length;
       // 创建一个Promise
       const promise = this.promiseFunction(...param);
       // 将promise置入哈希表，设定该参数的promise正在执行
-      this.promiseMap.set(0, promise);
+      this.promiseMap.set(index, promise);
       promise.then((res) => {
-        this.returnValueMap.set(0, res);
-        this.promiseMap.set(0, null);
+        this.returnValueMap.set(index, res);
+        this.promiseMap.set(index, null);
       });
       return await promise;
     } else {

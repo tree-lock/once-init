@@ -8,6 +8,7 @@ const runPromise = () => {
     }, 10);
   });
 };
+
 describe("初始化", () => {
   test("测试Promise", async () => {
     expect(await runPromise()).toBe(val);
@@ -115,6 +116,38 @@ describe("测试once-init", () => {
         expect(res[0]).toBe(1);
         expect(res[0]).toBe(res[1]);
       });
+    });
+  });
+});
+
+describe("带参测试", () => {
+  let res1 = 0;
+  let res2 = 0;
+  const paramsRunPromise = (op: "+" | "-") => {
+    return new Promise<number>((res) => {
+      setTimeout(() => {
+        if (op === "+") {
+          res(++res1);
+        } else {
+          res(--res2);
+        }
+      });
+    });
+  };
+  let oiPromise: OnceInit<number, [op: "+" | "-"]>;
+  /** 重置val和oiPromise */
+  beforeEach(() => {
+    oiPromise = oi(paramsRunPromise);
+    res1 = 0;
+    res2 = 0;
+  });
+  describe("init + refresh", () => {
+    test("init => refresh", async () => {
+      expect(await oiPromise.init("-")).toBe(-1);
+      expect(await oiPromise.refresh("-")).toBe(-2);
+      expect(await oiPromise.refresh("-")).toBe(-3);
+      expect(await oiPromise.refresh("+")).toBe(1);
+      expect(await oiPromise.init("-")).toBe(-3);
     });
   });
 });
