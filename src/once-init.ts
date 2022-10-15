@@ -28,8 +28,8 @@ export class OnceInit<T, P extends Array<any> = []> {
     );
     if (index === -1) {
       // 如果不在已执行参数中，将参数推入，并且执行
-      this.processedParams.push(param);
       const index = this.processedParams.length;
+      this.processedParams.push(param);
       // 创建一个Promise
       const promise = this.promiseFunction(...param);
       // 将promise置入哈希表，设定该参数的promise正在执行
