@@ -19,9 +19,11 @@ type K<T> = {
 };
 
 /**
- * 对象的属性如果是方法，都会被OnceInit的refresh封装成Promise方法
- * 其它属性保留原始状态
- * 其中oiSource属性指向传入的源对象
+ * 把对象的所有方法都修改成once-init的refresh方法
+ *
+ * 即防止对象的所有方法在同一时间执行多次
+ *
+ * @warning 该方法存在问题，应当使用 Proxy或Object.defineProperty 封装，而不是直接修改
  * @param obj 被封装的对象
  * @returns
  */

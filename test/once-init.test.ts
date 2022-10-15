@@ -49,6 +49,16 @@ describe("测试once-init", () => {
       expect(res[0]).toBe(res[1]);
       expect(res[1]).toBe(res[2]);
       expect(res[2]).toBe(res[3]);
+      const res1 = await Promise.all([
+        oiPromise.init(),
+        oiPromise.init(),
+        oiPromise.init(),
+        oiPromise.init(),
+      ]);
+      expect(res1[0]).toBe(1);
+      expect(res1[0]).toBe(res1[1]);
+      expect(res1[1]).toBe(res1[2]);
+      expect(res1[2]).toBe(res1[3]);
     });
 
     test("refresh", async () => {
@@ -62,6 +72,16 @@ describe("测试once-init", () => {
       expect(res[0]).toBe(res[1]);
       expect(res[1]).toBe(res[2]);
       expect(res[2]).toBe(res[3]);
+      const res1 = await Promise.all([
+        oiPromise.refresh(),
+        oiPromise.refresh(),
+        oiPromise.refresh(),
+        oiPromise.refresh(),
+      ]);
+      expect(res1[0]).toBe(2);
+      expect(res1[0]).toBe(res1[1]);
+      expect(res1[1]).toBe(res1[2]);
+      expect(res1[2]).toBe(res1[3]);
     });
 
     test("get", async () => {
@@ -88,19 +108,43 @@ describe("测试once-init", () => {
       expect(res[1]).toBe(2);
       expect(res[2]).toBe(3);
       expect(res[3]).toBe(4);
+
+      const res1 = await Promise.all([
+        oiPromise.exceed(),
+        oiPromise.exceed(),
+        oiPromise.exceed(),
+        oiPromise.exceed(),
+      ]);
+      expect(res1[0]).toBe(5);
+      expect(res1[1]).toBe(6);
+      expect(res1[2]).toBe(7);
+      expect(res1[3]).toBe(8);
     });
 
     test("execute", async () => {
+      const initPromiseRes = await oiPromise.init();
       const res = await Promise.all([
         oiPromise.execute(),
         oiPromise.execute(),
         oiPromise.execute(),
         oiPromise.execute(),
       ]);
-      expect(res[0]).toBe(1);
-      expect(res[1]).toBe(2);
-      expect(res[2]).toBe(3);
-      expect(res[3]).toBe(4);
+      expect(res[0]).toBe(initPromiseRes + 1);
+      expect(res[1]).toBe(initPromiseRes + 2);
+      expect(res[2]).toBe(initPromiseRes + 3);
+      expect(res[3]).toBe(initPromiseRes + 4);
+
+      const res1 = await Promise.all([
+        oiPromise.init(),
+        oiPromise.init(),
+        oiPromise.init(),
+        oiPromise.init(),
+      ]);
+
+      expect(res1[0]).toBe(initPromiseRes);
+      expect(res1[1]).toBe(initPromiseRes);
+      expect(res1[2]).toBe(initPromiseRes);
+      expect(res1[3]).toBe(initPromiseRes);
     });
   });
 

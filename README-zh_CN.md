@@ -220,6 +220,7 @@ await Promise.all([oiFoo.exceed(), oiFoo.refresh(), oiFoo.init()]); // 50秒后�
 await oiFoo.init(); // 50秒后，返回 1
 await oiFoo.execute(); // 50秒后，返回 2
 await oiFoo.init(); // 0秒后，返回 1
+await oiFoo.refresh(); // 50秒后，返回 3
 ```
 
 ### `OnceInit.wait`

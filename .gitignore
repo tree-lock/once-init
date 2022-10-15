@@ -4,3 +4,4 @@ package-lock.json
 dist
 pnpm-lock.yaml
 *.log
+coverage
