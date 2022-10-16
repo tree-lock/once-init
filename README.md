@@ -1,8 +1,12 @@
 # once-init
 
 <p align="center">
-  <a href="https://github.com/darkXmo/once-init/blob/main/LICENSE"><img src="https://img.shields.io/npm/l/once-init.svg?sanitize=true" alt="npm"></a>
-  <a href="https://www.npmjs.com/package/once-init"><img src="https://img.shields.io/npm/v/once-init.svg?sanitize=true" alt="gzip size"></a>
+  <a href="https://github.com/darkXmo/once-init/blob/main/LICENSE"><img src="https://img.shields.io/npm/l/once-init.svg?sanitize=true" alt="license"></a>
+  <a href="https://www.npmjs.com/package/once-init"><img src="https://img.shields.io/npm/v/once-init.svg?sanitize=true" alt="npm version"></a>
+  <a href="https://circleci.com/gh/darkXmo/once-init"><img src="https://circleci.com/gh/darkXmo/once-init.svg?style=shield" alt="circleci"></a>
+  <a href="https://app.codecov.io/gh/darkXmo/once-init"><img src="https://badgen.net/codecov/c/github/darkXmo/once-init" alt="test-coverage"></a>
+  <a href="https://packagephobia.now.sh/result?p=once-init"><img src="https://badgen.net/packagephobia/install/once-init" alt="gzip size"></a>
+
 </p>
 
 <strong style="text-align: center;">🗼 Makes asynchronous function execution manageable.</strong>
