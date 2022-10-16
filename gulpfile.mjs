@@ -118,6 +118,20 @@ export async function customizeVersion() {
   await changeVersion(version);
 }
 
+const npmPublish = (version) => {
+  if (version.includes("beta")) {
+    const command = "npm publish --tag beta";
+    console.log(command);
+    return spawnSync(command, {
+      stdio: "inherit",
+      shell: true,
+    });
+  }
+  const command = "npm publish";
+  console.log(command);
+  return spawnSync(command, { stdio: "inherit", shell: true });
+};
+
 export async function publish() {
   // 确认版本
   const packageFile = await fs.readJSON("./package.json");
@@ -132,6 +146,39 @@ export async function publish() {
         stdio: "inherit",
         shell: true,
       });
+    }
+    const branch = (
+      await execPromise("git rev-parse --abbrev-ref HEAD")
+    ).stdout.trim();
+    if (branch === "master" || branch === "main") {
+      // 判断是否是`master`分支，如果是，允许任意版本发布
+      npmPublish(version);
+      spawnSync(`git add . && git commit -m "build: release v${version}"`, {
+        stdio: "inherit",
+        shell: true,
+      });
+      if (!version.includes("beta")) {
+        spawnSync(`git tag v${version}`, { stdio: "inherit", shell: true });
+        spawnSync(`git push origin --tags`, { stdio: "inherit", shell: true });
+      }
+      return;
+    } else {
+      // beta版本
+      if (!version.includes("beta")) {
+        console.log(
+          `当前分支为${chalk.yellow(branch)}, 非master分支只允许发布beta版本`
+        );
+        return await changeVersion(oldVersion);
+      } else {
+        npmPublish(version);
+        return spawnSync(
+          `git add . && git commit -m "build: release v${version}"`,
+          {
+            stdio: "inherit",
+            shell: true,
+          }
+        );
+      }
     }
   }
 }
