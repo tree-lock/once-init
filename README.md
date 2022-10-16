@@ -9,6 +9,8 @@
 
 </p>
 
+> 由于引入了 `loadsh` 用于判断参数是否相同，所以体积较大。
+
 <strong style="text-align: center;">🗼 Makes asynchronous function execution manageable.</strong>
 
 封装可控的 `async function`。
