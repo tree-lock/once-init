@@ -146,6 +146,16 @@ describe("测试once-init", () => {
       expect(res1[2]).toBe(initPromiseRes);
       expect(res1[3]).toBe(initPromiseRes);
     });
+
+    describe("wait", () => {
+      test("wait", async () => {
+        expect(await oiPromise.wait()).toBeUndefined();
+        oiPromise.init();
+        expect(val).toBe(0);
+        await oiPromise.wait();
+        expect(val).toBe(1);
+      });
+    });
   });
 
   describe("复合测试", () => {
@@ -159,6 +169,17 @@ describe("测试once-init", () => {
         ]);
         expect(res[0]).toBe(1);
         expect(res[0]).toBe(res[1]);
+      });
+    });
+
+    describe("init + get", () => {
+      test("init => get", async () => {
+        const res1 = oiPromise.get();
+        expect(res1).toBeUndefined();
+        const res2 = await oiPromise.init();
+        expect(res2).toBe(1);
+        const res3 = oiPromise.get();
+        expect(res3).toBe(res2);
       });
     });
   });
