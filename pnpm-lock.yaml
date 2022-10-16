@@ -11,6 +11,7 @@ specifiers:
   '@types/jest': ^27.5.2
   '@types/lodash': ^4.14.186
   '@types/node': ^17.0.45
+  chalk: ^5.1.2
   cz-conventional-changelog: ^3.3.0
   fs-extra: ^10.1.0
   git-cz: ^4.9.0
@@ -39,6 +40,7 @@ devDependencies:
   '@types/jest': 27.5.2
   '@types/lodash': 4.14.186
   '@types/node': 17.0.45
+  chalk: 5.1.2
   cz-conventional-changelog: 3.3.0
   fs-extra: 10.1.0
   git-cz: 4.9.0
@@ -2491,6 +2493,11 @@ packages:
     dependencies:
       ansi-styles: 4.3.0
       supports-color: 7.2.0
+    dev: true
+
+  /chalk/5.1.2:
+    resolution: {integrity: sha512-E5CkT4jWURs1Vy5qGJye+XwCkNj7Od3Af7CP6SujMetSMkLs8Do2RWJK5yx1wamHV/op8Rz+9rltjaTQWDnEFQ==}
+    engines: {node: ^12.17.0 || ^14.13 || >=16.0.0}
     dev: true
 
   /char-regex/1.0.2:

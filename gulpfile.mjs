@@ -1,7 +1,10 @@
 import fs from "fs-extra";
 import inquirer from "inquirer";
 import { format } from "prettier";
-import { spawnSync } from "child_process";
+import { spawnSync, exec } from "child_process";
+import util from "util";
+import chalk from "chalk";
+const execPromise = util.promisify(exec);
 
 /**
  * @param {string} oldVersion
