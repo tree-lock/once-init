@@ -5,437 +5,235 @@
   <a href="https://www.npmjs.com/package/once-init"><img src="https://img.shields.io/npm/v/once-init.svg?sanitize=true" alt="gzip size"></a>
 </p>
 
-<strong style="text-align: center;">🗼 Let Promise Function Executed Only Once.</strong>
+<strong style="text-align: center;">🗼 Makes asynchronous function execution manageable.</strong>
 
-> The `Promise` will be executed when the attribute target is called for the first time, and the `Promise` will not be executed again when called repeatedly.
+封装可控的 `async function`。
 
-> The same `Promise` will not be executed twice at the same time. Only the first one will be executed, while the rest can still get the result of the `promise` after executed.
+> 同一个 `async function` 不会在同一时间内被执行两次，以防止发出重复的请求。
 
-[If you are looking for the mini version of once-init(excluding factory and onLoading), click me](https://github.com/darkXmo/oinit)
-[中国镜像](https://gitee.com/dXmo/once-init)
+> 第二次执行 `async function` ，会直接返回第一次执行的结果，而不是重复执行函数。
 
-## Once init Promise
+> 解决大量的相同请求的问题。
 
-1. **The `Promise Function` packaged by `OnceInit` will never be executed twice at the same time**
-2. If A `Promise Function` is called before previous `Promise Function` resolved， It will share the response of the previous one.
-3. [Example Site](https://darkxmo.github.io/once-init)
-
-## Install
-
-Install by package management tools, `pnpm` is recommended;
+## 安装
 
 ```bash
 npm install once-init
 ```
 
-OR
+## 简介
 
-```bash
-yarn add once-init
-```
+`once-init` 的核心思想是缓存和执行队列；
 
-OR
-
-```bash
-pnpm add once-init
-```
-
-## Usage
-
-For example, use `once-init` with `axios`;
-
-> assume `res` response returns `any`;
+## 使用
 
 ```typescript
+// 0. 引入once-init
 import oi from "once-init";
-const request = async () => {
-  const res: AxiosResponse<any> = await axiosInstance.get("/api");
-  return res.data;
-};
-oi(request, -1);
 
-oi.target; // -1
-
-await oi.init(); // [Axios Response Data Value] (any)
-await oi.refresh(); // [Axios Response Data Value] (any)
-
-await oi.init(); // [No Axios Request Sent] (any)
-oi.target; // (any)
-
-oi.refresh().then((res) => {
-  console.log(res); // [Axios Response Data Value] (any)
-});
-oi.refresh().then((res) => {
-  console.log(res); // [Previous Axios Response Data Value] (any)
-});
-```
-
-## Apis
-
-### oi (default export)
-
-假设存在一个 `axios` `Promise` 请求，返回值类型为 `number` ，值为 `777`。
-
-```typescript
-const requestNumber = async () => {
-  const res: AxiosResponse<number> = await axiosInstance.get("/api/number");
-  return res.data;
-};
-```
-
-你可以使用 `oi` 来封装这个 `Promise` 函数
-
-```typescript
-const oiInstance = oi(requestNumber);
-```
-
-现在，你可以在任何地方调用这个实例。
-
-### init
-
-假设有两个方法 `functionA` 和 `functionA`，都需要发送这个请求。
-
-```typescript
-async function functionA() {
-  ...
-  const res = await oiInstance.init();
-  ...
+// 1. 创建一个异步函数
+async function foo() {
+  // do something, for example, request backend data.
+  const res = await axios.get("xxx.com");
+  return res;
 }
 
-async function functionB() {
-  ...
-  const res = await oiInstance.init();
-  ...
-}
+// 2. 用once-init封装这个异步函数
+const oiFoo = oi(foo);
+
+// 3. 执行封装后的函数
+oiFoo.init();
 ```
 
-而你需要在某个文件中，需要同时使用这两个方法。
+### 用例
+
+#### 不用 `once-init`
 
 ```typescript
-/** asynchronous executing */
-async function functionC() {
-  await functionA();
-  await functionB();
-}
-/** Synchronous executing */
-function functionD() {
-  functionA();
-  functionB();
-}
+// 我们假设 axios.get("xxx.com") 返回的值是一个递增的数字，即第1次请求，会返回1，第2次请求会返回2，第n次请求会返回n。
+await foo(); // 返回 1
+await foo(); // 返回 2
+await foo(); // 返回 3
 ```
 
-对于 `functionC`， 在**第一次执行 `init` 之后**，`oiInstance` 将会保存 `Promise` 的执行结果，此后再执行 `init` ，将**不会再发出 `Promise` 请求**。
-
-对于 `functionD`， `api` 请求只会发送一次，`functionA` 和 `functionB` 中的 `res` 都将等待**同一个请求**的返回值，不会发送重复的请求。
-
-这个示例能帮助你更好地理解
+#### 使用 `once-init`
 
 ```typescript
-const requestNumber = async () => {
-  console.log("Load");
-  const res: AxiosResponse<number> = await axiosInstance.get("/api/number");
-  return res.data;
-};
-const oiInstance = oi(requestNumber);
-/** only One Promise will be executed */
-/** only One 'Load' will be output on console */
-oiInstance.init().then((res) => {
-  console.log(res); // [Promise Return Value] 777
-});
-oiInstance.init().then((res) => {
-  console.log(res); // [Promise Return Value] 777
-});
+// once-init 会将重复执行重定向到第一次执行的结果上；（第一次执行后会缓存执行结果，类似单例模式）
+await oiFoo.init(); // 返回 1
+await oiFoo.init(); // 返回 1
+await oiFoo.init(); // 返回 1
+```
+
+这意味着无论重复执行 `oiFoo.init` 多少次，`foo` 都只会执行第一次，返回第一次执行的结果；（就像缓存一样）
+
+```typescript
+await Promise.all([oiFoo.init(), oiFoo.init(), oiFoo.init()]); // 返回 [1, 1, 1]
+await Promise.all([oiFoo.init(), oiFoo.init(), oiFoo.init()]); // 返回 [1, 1, 1]
 ```
 
 ```typescript
-const requestNumber = async () => {
-  console.log("Load");
-  const res: AxiosResponse<number> = await axiosInstance.get("/api/number");
-  return res.data;
-};
-const oiInstance = oi(requestNumber);
-/** only One Promise will be executed */
-/** only One 'Load' will be output on console */
-await oiInstance.init();
-await oiInstance.init(); // since the value has been initialized, it will return value immediately
+// 通常，如果你只会使用到init，你可以直接把 oiFoo 定义成 init 函数
+const oiFoo = oi(foo).init;
+
+await oiFoo();
 ```
 
-### target
-
-`target` 属性能同步获取返回值。
+如果你不使用缓存，只是希望防止同一时间发出重复请求，你可以使用`refresh`：
 
 ```typescript
-function functionE() {
-  ...
-  const res = oiInstance.target;
-  ...
-}
+// refresh和init 在同一时间执行多次，都会返回第一次的结果；
+await Promise.all([oiFoo.refresh(), oiFoo.refresh(), oiFoo.refresh()]); // 返回 [1, 1, 1]
+// 但refresh如果第一次执行已经结束，再次执行，则会刷新结果；
+await Promise.all([oiFoo.refresh(), oiFoo.refresh(), oiFoo.refresh()]); // 返回 [2, 2, 2]
 ```
 
-如果在获取 `target` 之前已经完成初始化，`target` 的值为 `Promise` 的返回值，否则，`target` 的值为 `undefined` 。例如，
+> `once-init` 会区分参数，如果传入的异步函数有参，那么传入不同的参数将被视为两个不同的异步函数，不会共享缓存和执行队列；
+
+下面这个复杂用例将会给你提供灵感：
 
 ```typescript
-const res = oiInstance.target; // undefined
-```
-
-```typescript
-await oiInstance.init();
-
-const res = oiInstance.target; // [Return Value] 777
-```
-
-请注意，虽然是同步获取，但 `once-init` 仍然会认为你此时需要发出请求，因此调用 `target` 属性也会开始初始化。
-
-> 但如果 `Promise Function` 是带参数的 `Function` ，则不会执行初始化。
-
-我们假设 `api` 的请求时长是 `10s` 。在下面这个例子里，请求在第一行的时候就已经发出。
-
-```typescript
-const res = oiInstance.target; // undefined
-/** Promise has been executed. */
-setTimeout(async () => {
-  const resAfter = oiInstance.target; // [Return Value] 777
-  const intAffter = await oiInstance.init(); // [Return Value] 777 , Promise will not be executed again.
-  /** Since The Promise has been executed before, it will not be executed again. */
-}, 10001);
-```
-
-和同时先后同步执行两次 `init` 一样，假如在获取 `init` 之前访问了 `target` 属性，而 访问 `target` 导致的 `Promise` 请求没有结束的话，`init` 将直接等待上一个 `Promise` 结束并返回上一个 `Promise` 的返回值 。
-
-下面这个例子将会帮助你理解。
-
-```typescript
-const res = oiInstance.target; // undefined
-setTimeout(async () => {
-  const resAfter = oiInstance.target; // undefined
-  const intAffter = await oiInstance.init(); // [Return Value] 777
-  /** Since The Promise has been executing it will not be executing again.  */
-  /** After About 8000ms, The Value will be return by the first promise done */
-}, 2000);
-```
-
-这里的 `init` 将会等待上一个 `Promise` 函数执行的返回值，由于 `init` 是在 `200ms` 之后才执行的，所以它只需要再等待大约 `800ms` 就能获得这个返回值了。
-
-### defaultValue
-
-使用 `target` 属性通常需要搭配默认值，而 `oi` 的第二个参数可以为你的 `Promise` 定义默认值。
-
-```typescript
-const defaultValue = -1;
-const oiInstance = oi(requestNumber, defaultValue);
-
-const ans = oiInstance.target; // -1
-```
-
-### refresh
-
-你如果想要更新实例的值，则需要调用 `refresh` 。
-
-假设第一次加载的值是 `777` ，而刷新之后的值是 `888` 。
-
-```typescript
-const ans = await oiInstance.init(); // [Retrun Value] 777
-const ansAfterRefresh = await oiInstance.refresh(); // [Retrun Value] 888
-```
-
-刷新之后，调用 `init` 和 `target` 获取的值会变成新的值。
-
-```typescript
-oiInstance.target; // undefined
-await oiInstance.init(); // [Promise Retrun Value] 777
-oiInstance.target; // 777
-await oiInstance.refresh(); // [Promise Retrun Value] 888
-oiInstance.target; // 888 /** Promise will not be exectued again */
-await oiInstance.init(); // 888 /** Promise will not be exectued again */
-```
-
-你可以直接使用 `refresh` 来执行初始化，在初始化上，它和 `init` 的效果一致。
-
-```typescript
-oiInstance.target; // undefined
-await oiInstance.refresh(); // [Promise Retrun Value] 777
-oiInstance.target; // 777
-await oiInstance.refresh(); // [Promise Retrun Value] 888
-oiInstance.target; // 888
-```
-
-如果同步先后调用了两次 `refresh` ，两次 `refresh` 将等待**同一个请求**的返回值，不会发送重复的请求。
-
-```typescript
-async function functionA() {
-  console.log("A", await oiInstance.refresh());
-}
-async function functionB() {
-  console.log("B", await oiInstance.refresh());
-}
-functionA(); // 'A', [Promise Retrun Value] 777
-functionB(); // 'B', [Promise Retrun Value] 777
-/** only one promise is executed */
-/** functionA and functionB share A same promise and promise return value */
-```
-
-```typescript
-oiInstance.refresh((res) => {
-  console.log(res); // [Promise Retrun Value] 777
-});
-oiInstance.refresh((res) => {
-  console.log(res); // [Promise Retrun Value] 777
-});
-```
-
-我们仍然假设 `api` 请求的时长为 `10s === 10000ms` 。
-
-```typescript
-oiInstance.refresh();
-setTimeout(async () => {
-  await oiInstance.refresh();
-}, 2000);
-/** After 10000ms, two refresh will be exected at the same time */
-```
-
-如果异步先后调用了两次 `refresh` ，那么发送两次请求，和用`oi`封装前的 `Promise Function` 的执行效果一致。
-
-```typescript
-async function functionA() {
-  console.log("A", await oiInstance.refresh());
-}
-async function functionB() {
-  console.log("B", await oiInstance.refresh());
-}
-await functionA(); // 'A', [Promise Retrun Value] 777
-await functionB(); // 'B', [Promise Retrun Value] 888
-/** Two different promises were executed */
-```
-
-**如果你觉得逻辑太过复杂，那请至少要记住一点，`OnceInit` 封装的 `Promise Function` ，永远不会在同一时间被执行两次**。
-
-### Param
-
-`Promise Function` 允许传递任意参数，需要注意的是，如果在第一个 `Promise` 执行期间，通过 `api` 传入了多个不同的参数，那么只会得到第一个参数的 `Promise` 的结果。
-
-假设 `/api/abs` 的返回值是 `param` 的绝对值，执行时间为 `10s === 10000ms` 。
-
-```typescript
-const oiInstance = oi(async (param: number) => {
-  const response: AxiosResponse<number> = await axios.get("/api/abs/" + param);
-  return response.data;
-}, 0);
-
-await oiInstance.init(-10); // [Promise Return Value] 10
-/** Only the first promise will be executed */
-oiInstance.refresh(-888).then((res) => {
-  console.log(res); // [Promise Retrun Value] 888
-});
-/** The rest params will be ignored */
-oiInstance.refresh(-777).then((res) => {
-  console.log(res); // [Promise Retrun Value] 888
-});
-```
-
-### factory
-
-如果 `Promise` 的返回值需要加工，可以传入 `factory` 参数来实现加工。
-
-例如，`api` 传递过来的数据是一个时间戳，而希望获得返回值是一个 `Date` 对象。
-
-```typescript
-const ans = await oiInstance.init(); // [Timestamp] 1640673370941
-const wishAns = new Date(ans);
-```
-
-你可以传入一个 `factory` 函数作为参数，让 `Promise Function` 在执行 `Promise` 完成之后，自动加工为新的值。
-
-```typescript
-const factory = (raw: number) => new Date(raw);
-const oiInstance = oi(requestTimeStamp, factory);
-
-const ans = await oiInstance.init(); // [Promise Return Value] Date
-```
-
-你仍然可以传入默认值，作为第三个参数，但它的类型应当是 `factory` 的返回值的类型。
-
-```typescript
-const oiInstance = oi(requestTimeStamp, factory, new Date());
-```
-
-如果 `Promise` 的返回值只是某个对象的一部分，你还可以用 `factory` 的第二个参数来对对象进行局部修改。
-
-```typescript
-interface I {
-  ...;
-  a: number;
-};
-const defaultValue = {
-  ...
-  a: -1
-};
-
-const factory = (raw: number, observe: I) => {
-  observe.a = raw;
+// 假设 xxx.com/+ 会返回正数， xxx.com/- 会返回负数
+async function foo(op: "+" | "-") {
+  const res = await axios.get(`xxx.com/${op}`);
+  return res;
 }
 
-const oiInstance = oi(requestNumber, factory, defaultValue);
-await oiInstance.init(); // { ..., a: 777 }
-defaultValue; // { ..., a: 777 }
+const oiFoo = oi(foo);
+await oiFoo.init("-"); // 返回 -1
+await oiFoo.refresh("-"); // 返回 -2
+await oiFoo.refresh("-"); // 返回 -3
+
+await oiFoo.refresh("+"); // 返回 1
+await oiFoo.init("-"); // 返回 -3
 ```
 
-> 如果你不传入默认值，则 `observe ` 的类型会被视为 `I | undefined` ，此时需要进行 `observe` 的类型判断才能修改 `observe`；
+## api
 
-### onLoading
+> `init`、`refresh`、`exceed` 共享缓存；
 
-当某一次 `Promise` 开始执行和结束执行的时候，会触发 `onLoading` 事件。
+在下面的例子中：
 
-```typescript
-oiInstance.onLoading((event: boolean) => {
-  if (event === "true") {
-    console.log("promise function start");
-  } else {
-    console.log("promise function done");
-  }
-});
+> 我们假设 `axios.get("xxx.com")` 返回的值是一个递增的数字，即第 1 次请求，会返回`1`，第 2 次请求会返回`2`，第 n 次请求会返回`n`。
 
-await oiInstance.init(); // promise function start
-/** after promise done */
-// promise function done
-```
+> 我们假设 `foo` 的执行时间为 `50ms`；其它时间忽略不计；
+
+### `OnceInit.init`
+
+最常用的`api`，无论你执行多少次，`init`都只会执行一次，并返回给你第一次执行的结果。
 
 ```typescript
-/** only one console log will be output */
-oiInstance.init(); // promise function start
-oiInstance.init();
-oiInstance.init();
-oiInstance.init();
-oiInstance.init();
-/** after promise done */
-// promise function done;
-```
-
-### OnceInit
-
-你还可以使用继承抽象类的方式，来实现底层的 `once-init` 。如果使用 `Typescript` ，则还需要定义实例的值的类型。
-
-> 详情请查看源码，绝大多数情况，你不需要自己来实现抽象类
-
----
-
-> 例如，此处定义类型为 `number` 。
-
-```typescript
-class OnceInitInstance extends OnceInit<number> {
-  protected initPromise(): Promise<number> {
-    const res: AxiosResponse<number> = await axiosInstance.get("/api/number");
-    return res.data;
-  }
+async function foo() {
+  const res = await axios.get("xxx.com");
+  return res;
 }
-const oiInstance = new OnceInitInstance(-1);
 
-console.log(numberInstance.target); // -1
+const oiFoo = oi(foo);
 
-setTimeout(() => {
-  console.log(numberInstance.target); // 777
-}, 10000);
+await oiFoo.init(); // 50秒后，返回 1
+await oiFoo.init(); // 0秒后，返回 1
+await oiFoo.init(); // 0秒后，返回 1
+```
 
-numberInstance.init().then(() => {
-  console.log(numberInstance.target); // [Promise Return Value] 777
-});
+如果多个 `init` 同时执行（第二次调用的时候，第一次执行还没有完成），则第二次及之后的调用将会等待第一次执行的结果，然后返回第一次执行的结果；
+
+```typescript
+setTimeout(oiFoo.init, 30); // 20秒后，执行完毕，返回 1
+await oiFoo.init(); // 50秒后，执行完毕，返回 1
+```
+
+### `OnceInit.refresh`
+
+`refresh` 刷新 `once-init` 的数据；如果你在第一次执行 `init` 之后，希望再执行一次 `foo` 获取新的后端数据，你可以执行 `refresh` 。
+
+`refresh` 之后，再执行 `oiFoo` 将会返回刷新后的数据；
+
+```typescript
+async function foo() {
+  const res = await axios.get("xxx.com");
+  return res;
+}
+
+const oiFoo = oi(foo);
+
+await oiFoo.init(); // 50秒后，返回 1
+await oiFoo.refresh(); // 50秒后，返回 2
+// refresh 会刷新 init 的缓存
+await oiFoo.init(); // 0秒后，返回 2
+await oiFoo.refresh(); // 50秒后，返回 3
+```
+
+> **如果`refresh`正在刷新，则在刷新时间内执行的`init`也会等待刷新结果更新后再返回值，而不会返回之前的结果。**
+
+多个 `refresh` 如果在同一时间里同时执行，将只会执行一次，并返回第一次执行的结果。【如果你希望同一时间里同时执行，会执行多次，请使用 `exceed` 】
+
+```typescript
+setTimeout(oiFoo.refresh, 30); // 20秒后，执行完毕，返回 1
+await oiFoo.refresh(); // 50秒后，执行完毕，返回 1
+```
+
+`refresh` 和 `init` 共享一个执行队列，这意味着如果 `init` 和 `refresh` 同时执行，也将只会执行一次并返回第一次执行的结果；
+
+```typescript
+setTimeout(oiFoo.refresh, 30); // 20秒后，执行完毕，返回 1
+await oiFoo.init(); // 50秒后，执行完毕，返回 1
+```
+
+### `OnceInit.get`
+
+`get` 是 `init` 的同步版本，相当于获取缓存；如果有缓存的值，那么 `get` 会返回缓存值；如果没有，则会返回 `undefined`。
+
+```typescript
+oiFoo.get(); // 返回 undefined
+
+await oiFoo.init(); // 50秒后，返回 1
+oiFoo.get(); // 返回 1
+```
+
+### `OnceInit.exceed`
+
+`exceed` 会强制执行函数，无论现在是否正在执行另一个相同的异步函数。
+
+```typescript
+await Promise.all([oiFoo.exceed(), oiFoo.exceed(), oiFoo.exceed()]); // 50秒后，返回 [1, 2, 3];
+
+// exceed 会刷新缓存
+await oiFoo.init(); // 0秒后，返回 3
+await oiFoo.refresh(); // 50秒后，返回 4
+```
+
+如果 `exceed` 正在执行， `refresh` 和 `init` 将会返回 `exceed` 执行的结果；
+
+```typescript
+await Promise.all([oiFoo.refresh(), oiFoo.exceed()]); // 50秒后，返回 [1, 2];
+
+await Promise.all([oiFoo.exceed(), oiFoo.refresh()]); // 50秒后，返回 [3, 3];
+
+await Promise.all([oiFoo.exceed(), oiFoo.refresh(), oiFoo.init()]); // 50秒后，返回 [4, 4, 4];
+```
+
+### `OnceInit.execute`
+
+`execute` 会执行源函数，因此它既不会修改缓存，也不会影响执行队列。
+
+```typescript
+await oiFoo.init(); // 50秒后，返回 1
+await oiFoo.execute(); // 50秒后，返回 2
+await oiFoo.init(); // 0秒后，返回 1
+await oiFoo.refresh(); // 50秒后，返回 3
+```
+
+### `OnceInit.wait`
+
+如果当前异步函数正在执行，`wait`会等待直接结束，如果异步函数没有执行，则立即返回。
+
+`wait` 没有返回值；
+
+```typescript
+await oiFoo.wait(); // 等待0秒
+
+oiFoo.init();
+oiFoo.get(); // 返回 undefined
+await oiFoo.wait(); // 等待50秒
+oiFoo.get(); // 返回 1
 ```
