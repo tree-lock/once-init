@@ -69,6 +69,7 @@
     "build": "tsc",
     "dev": "tsc --watch",
     "ci": "npm run lint && npm run build",
-    "release": "npm run build && gulp && npm run release"
+    "release": "npm run build && gulp && npm run publish",
+    "version": "gulp customizeVersion"
   }
 }
