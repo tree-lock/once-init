@@ -1,1 +1,13 @@
-{}
+{
+  "overrides": [
+    {
+      "files": "config.*",
+      "options": {
+        "quoteProps": "preserve",
+        "singleQuote": false,
+        "trailingComma": "none",
+        "semi": false
+      }
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 {
   "name": "once-init",
-  "version": "1.0.0-beta.2",
+  "version": "1.0.0-beta.3",
   "description": "Init a target by promise only once.",
   "repository": "git@github.com:darkXmo/once-init.git",
   "author": "Xmo <18851989097@163.com>",
@@ -12,6 +12,9 @@
     "promise"
   ],
   "homepage": "https://github.com/darkXmo/once-init",
+  "bugs": {
+    "url": "https://github.com/darkXmo/once-init/issues"
+  },
   "license": "MIT",
   "dependencies": {
     "lodash": "^4.17.21"
@@ -35,7 +38,7 @@
     "inquirer": "^8.2.4",
     "jest": "^28.1.3",
     "lint-staged": "^11.2.6",
-    "prettier": "2.4.1",
+    "prettier": "^2.7.1",
     "rimraf": "^3.0.2",
     "ts-jest": "^28.0.8",
     "typescript": "^4.8.4"
@@ -52,31 +55,20 @@
     ],
     "*.{js,ts,css,md}": "prettier --write --ignore-unknown"
   },
-  "module": "dist/esm/index.mjs",
-  "main": "dist/cjs/index.js",
-  "jsnext:main": "dist/esnext/index.js",
-  "umd:main": "dist/umd/index.js",
-  "source": "src/index.ts",
-  "typings": "dist/esm/index.d.ts",
-  "exports": {
-    "import": "./dist/esm/index.js",
-    "require": "./dist/cjs/index.js",
-    "default": "./dist/esm/index.mjs"
-  },
+  "main": "dist/index.js",
   "files": [
     "dist"
   ],
   "scripts": {
+    "c": "npm run commit",
     "commit": "git add . && git status && git-cz",
     "prepare": "husky install",
-    "build": "npm run tsc",
+    "lint": "eslint src/* --fix",
     "test": "jest",
-    "tsc": "rimraf dist && npm run build:esm && npm run build:cjs && npm run build:umd && npm run build:jsnext",
-    "build:esm": "tsc --module es2015 --outDir dist/esm -d",
-    "build:cjs": "tsc --module commonjs --outDir dist/cjs",
-    "build:umd": "tsc --module umd --outDir dist/umd",
-    "build:jsnext": "tsc --module esnext --outDir dist/esnext",
-    "clean": "rimraf dist pnpm* yarn.* node_modules package-*",
-    "release": "npm run build && gulp publish"
+    "test:cov": "jest --coverage",
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "ci": "npm run lint && npm run build",
+    "release": "npm run build && gulp"
   }
 }

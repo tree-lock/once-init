@@ -71,6 +71,7 @@ async function changeVersion(version) {
     .replace("/** 请勿手动修改本文件，本文件通过命令行自动生成 */\n*", "")
     .replace("export default ", "")
     .replace(/\/\*\*.*\*\/\n*/g, "");
+  console.log(configFileStr);
   const configFile = JSON.parse(configFileStr);
   packageFile.version = version;
   configFile.version = version;
