@@ -9,7 +9,8 @@
     "xmon",
     "xmo",
     "init",
-    "promise"
+    "promise",
+    "function"
   ],
   "homepage": "https://github.com/darkXmo/once-init",
   "bugs": {
@@ -65,7 +66,6 @@
     "c": "npm run commit",
     "commit": "git add . && git status && git-cz",
     "prepare": "husky install",
-    "lint": "eslint src/* --fix",
     "test": "jest",
     "test:cov": "jest --coverage",
     "build": "rimraf dist && webpack --mode production",
