@@ -1,4 +1,4 @@
-import oi, { OnceInit } from "../dist/index";
+import oi, { OnceInit } from "../src/index";
 /** val每增加1表示执行一次 */
 let val: number = 0;
 const runPromise = () => {

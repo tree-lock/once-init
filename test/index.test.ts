@@ -1,4 +1,4 @@
-import { packagedByRefresh, version } from "../dist/index";
+import { packagedByRefresh, version } from "../src/index";
 
 describe("test module", () => {
   it("defined", () => {
