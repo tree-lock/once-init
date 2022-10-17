@@ -71,7 +71,7 @@
     "build": "rimraf dist && webpack --mode production",
     "dev": "webpack --watch --mode development",
     "ci": "npm run lint && npm run build",
-    "release": "npm run build && gulp",
+    "release": "npm run build && gulp && git push",
     "version": "gulp customizeVersion"
   }
 }
