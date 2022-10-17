@@ -70,7 +70,6 @@ const checkVersion = async (oldVersion) => {
 async function changeVersion(version) {
   const packageFile = await fs.readJSON("./package.json");
   const versionFilePath = "./src/config.ts";
-  const versionDistPath = "./dist/version-config.js";
   const configFileStr = (await fs.readFile(versionFilePath, "utf-8"))
     .replace("/** 请勿手动修改本文件，本文件通过命令行自动生成 */\n*", "")
     .replace("export default ", "")
@@ -97,9 +96,11 @@ async function changeVersion(version) {
       spaces: 2,
     }),
     fs.writeFile(versionFilePath, str),
-    fs.writeFile(versionDistPath, str),
   ]);
-
+  spawnSync("npm run build", {
+    stdio: "inherit",
+    shell: true,
+  });
   console.log(`config, package.json 的版本号已更新为${version}`);
 }
 
