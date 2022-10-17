@@ -12,6 +12,9 @@ export default function oi<T, P extends Array<any> = []>(...args: any[]) {
   }
 }
 
+/**
+ * 把对象的所有的Function都修改成Async Function
+ */
 type K<T> = {
   [k in keyof T]: T[k] extends (...args: any) => any
     ? (...args: Parameters<T[k]>) => Promise<Awaited<ReturnType<T[k]>>>
@@ -23,8 +26,8 @@ type K<T> = {
  *
  * 即防止对象的所有方法在同一时间执行多次
  *
- * @warning 该方法存在问题，应当使用 Proxy或Object.defineProperty 封装，而不是直接修改
  * @param obj 被封装的对象
+ * @deprecated 该api仍处于测试状态
  * @returns
  */
 export function packagedByRefresh<T extends object>(obj: T) {

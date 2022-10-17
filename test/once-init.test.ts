@@ -1,4 +1,4 @@
-import oi, { OnceInit } from "../src/index";
+import oi, { OnceInit } from "../dist/index";
 /** val每增加1表示执行一次 */
 let val: number = 0;
 const runPromise = () => {
@@ -10,6 +10,10 @@ const runPromise = () => {
 };
 
 describe("初始化", () => {
+  test("defined", () => {
+    expect(oi).toBeDefined();
+    expect(OnceInit).toBeDefined();
+  });
   test("测试Promise", async () => {
     expect(await runPromise()).toBe(val);
     expect(await runPromise()).toBe(val);

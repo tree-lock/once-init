@@ -1,4 +1,10 @@
-import { packagedByRefresh } from "../src";
+import { packagedByRefresh } from "../dist/index";
+
+describe("test module", () => {
+  it("test", () => {
+    expect(packagedByRefresh).toBeDefined();
+  });
+});
 
 describe(packagedByRefresh.name, () => {
   const obj = {
