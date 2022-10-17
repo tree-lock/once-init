@@ -1,0 +1,71 @@
+{
+  "disableEmoji": false,
+  "format": "{type}{scope}: {emoji}{subject}",
+  "list": [
+    "feat",
+    "perf",
+    "docs",
+    "fix",
+    "style",
+    "ci",
+    "test",
+    "refactor",
+    "build",
+    "chore"
+  ],
+  "maxMessageLength": 64,
+  "minMessageLength": 3,
+  "questions": ["type", "scope", "subject", "issues"],
+  "scopes": ["framework-主架构", "configuration-配置文件", "others-其它"],
+  "types": {
+    "feat": {
+      "description": "添加或修改功能",
+      "emoji": "🎸",
+      "value": "feat"
+    },
+    "perf": {
+      "description": "不涉及具体功能的性能优化",
+      "emoji": "⚡️",
+      "value": "perf"
+    },
+    "fix": {
+      "description": "错误修正",
+      "emoji": "🐛",
+      "value": "fix"
+    },
+    "docs": {
+      "description": "文档修改",
+      "emoji": "✏️",
+      "value": "docs"
+    },
+    "style": {
+      "description": "代码结构优化",
+      "emoji": "💄",
+      "value": "style"
+    },
+    "ci": {
+      "description": "配置文件",
+      "emoji": "🎡",
+      "value": "ci"
+    },
+    "refactor": {
+      "description": "项目重构",
+      "emoji": "💡",
+      "value": "refactor"
+    },
+    "test": {
+      "description": "添加测试",
+      "emoji": "💍",
+      "value": "test"
+    },
+    "build": {
+      "description": "发布/预发布",
+      "emoji": "🏹",
+      "value": "build"
+    },
+    "chore": {
+      "description": "只是提交而已",
+      "value": "chore"
+    }
+  }
+}
