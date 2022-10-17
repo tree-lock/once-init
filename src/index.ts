@@ -1,5 +1,8 @@
 import { OnceInit } from "./once-init";
+import config from "./config";
 export * from "./once-init";
+
+export const version = config.version;
 
 export default function oi<T, P extends Array<any>>(
   promise: (...param: P) => Promise<T>

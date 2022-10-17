@@ -1,8 +1,9 @@
-import { packagedByRefresh } from "../dist/index";
+import { packagedByRefresh, version } from "../dist/index";
 
 describe("test module", () => {
-  it("test", () => {
+  it("defined", () => {
     expect(packagedByRefresh).toBeDefined();
+    expect(version).toBeDefined();
   });
 });
 
