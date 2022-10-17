@@ -27,6 +27,9 @@ describe("测试once-init", () => {
     oiPromise = oi(runPromise);
     val = 0;
   });
+  afterEach(async () => {
+    await oiPromise.wait();
+  });
 
   describe("单独测试", () => {
     test("normal", async () => {
@@ -174,6 +177,35 @@ describe("测试once-init", () => {
         expect(res[0]).toBe(1);
         expect(res[0]).toBe(res[1]);
       });
+
+      test("refresh => init", async () => {
+        const res = await Promise.all([
+          oiPromise.refresh(),
+          oiPromise.init(),
+          oiPromise.refresh(),
+          oiPromise.refresh(),
+        ]);
+        expect(res[0]).toBe(1);
+        expect(res[0]).toBe(res[1]);
+      });
+
+      test("setTimeout-refresh => init", async () => {
+        setTimeout(async () => {
+          const res = await oiPromise.refresh();
+          expect(res).toBe(1);
+        }, 4);
+        const res = await oiPromise.init();
+        expect(res).toBe(1);
+      });
+
+      test("setTimeout-init => refresh", async () => {
+        setTimeout(async () => {
+          const res = await oiPromise.init();
+          expect(res).toBe(1);
+        }, 4);
+        const res = await oiPromise.refresh();
+        expect(res).toBe(1);
+      });
     });
 
     describe("init + get", () => {
@@ -184,6 +216,59 @@ describe("测试once-init", () => {
         expect(res2).toBe(1);
         const res3 = oiPromise.get();
         expect(res3).toBe(res2);
+      });
+    });
+
+    describe("init + refresh + exceed", () => {
+      test("refresh => exceed | exceed => refresh + init", async () => {
+        const res1 = await Promise.all([
+          oiPromise.refresh(),
+          oiPromise.exceed(),
+        ]); // 50秒后，返回 [1, 2];
+
+        expect(res1).toEqual([1, 2]);
+
+        const res2 = await Promise.all([
+          oiPromise.exceed(),
+          oiPromise.refresh(),
+        ]); // 50秒后，返回 [3, 3];
+
+        expect(res2).toEqual([3, 3]);
+
+        const res3 = await Promise.all([
+          oiPromise.exceed(),
+          oiPromise.refresh(),
+          oiPromise.init(),
+        ]); // 50秒后，返回 [4, 4, 4];
+
+        expect(res3).toEqual([4, 4, 3]);
+
+        const res4 = await oiPromise.init();
+        expect(res4).toBe(4);
+
+        const res5 = await Promise.all([
+          oiPromise.init(),
+          oiPromise.exceed(),
+          oiPromise.refresh(),
+          oiPromise.exceed(),
+          oiPromise.refresh(),
+          oiPromise.init(),
+        ]); // 50秒后，返回 [5, 5, 6, 5, 4];
+
+        expect(res5).toEqual([4, 5, 5, 6, 6, 4]);
+      });
+    });
+
+    describe("init + execute + refresh", () => {
+      test("init => execute => init => refresh", async () => {
+        const res1 = await oiPromise.init(); // 50秒后，返回 1
+        expect(res1).toBe(1);
+        const res2 = await oiPromise.execute(); // 50秒后，返回 2
+        expect(res2).toBe(2);
+        const res3 = await oiPromise.init(); // 0秒后，返回 1 （缓存未更新）
+        expect(res3).toBe(1);
+        const res4 = await oiPromise.refresh(); // 50秒后，返回 3 （缓存更新，重新获取后端值，由于后端在上次execute请求中虽未更新缓存，但更新了后端，所以返回值为3）
+        expect(res4).toBe(3);
       });
     });
   });
