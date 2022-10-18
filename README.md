@@ -24,6 +24,7 @@
 ## 安装
 
 ```bash
+# 浏览器环境和nodejs环境都可用
 npm install once-init
 ```
 
@@ -49,6 +50,14 @@ const oiFoo = oi(foo);
 
 // 3. 执行封装后的函数
 oiFoo.init();
+```
+
+通常来说，`axios.get` 请求很适合进行封装，你可以用`refresh`来代替原来的 `axios.get` 实现无感处理重复请求。
+
+只需要下面这一行：
+
+```typescript
+axios.get = oi(axios.get).refresh;
 ```
 
 ### 用例
