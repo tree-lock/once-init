@@ -277,3 +277,5 @@ await Promise.all([
   oiFoo.init(),
 ]); // 50秒后，返回 [5, 5, 6, 6, 4];
 ```
+
+![Alt](https://repobeats.axiom.co/api/embed/3e2a2caafe9c373cbe8fa4a16c3fb1b3d2e20fdf.svg "Repobeats analytics image")

@@ -24,6 +24,7 @@
 ## 安装
 
 ```bash
+# 浏览器环境和nodejs环境都可用
 npm install once-init
 ```
 
@@ -49,6 +50,14 @@ const oiFoo = oi(foo);
 
 // 3. 执行封装后的函数
 oiFoo.init();
+```
+
+通常来说，`axios.get` 请求很适合进行封装，你可以用`refresh`来代替原来的 `axios.get` 实现无感处理重复请求。
+
+只需要下面这一行：
+
+```typescript
+axios.get = oi(axios.get).refresh;
 ```
 
 ### 用例
@@ -227,7 +236,7 @@ oiFoo.get(); // 返回 1
 
 ### `OnceInit.exceed`
 
-!!! 这是一个会造成理解困难的函数，不推荐使用；
+!!! 这是一个会造成理解困难的函数，**请尽量不要和其它 api 混合使用**；
 
 `exceed` 会强制执行函数，无论现在是否正在执行另一个相同的异步函数。
 
@@ -268,3 +277,5 @@ await Promise.all([
   oiFoo.init(),
 ]); // 50秒后，返回 [5, 5, 6, 6, 4];
 ```
+
+![Alt](https://repobeats.axiom.co/api/embed/3e2a2caafe9c373cbe8fa4a16c3fb1b3d2e20fdf.svg "Repobeats analytics image")
