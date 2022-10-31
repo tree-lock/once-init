@@ -1,11 +1,3 @@
-/**
- * once-init v1.0.0-beta 版本
- * 1. 由于用户可以在Promise Function里自定义相关的状态，`once-init`没有必要画蛇添足，因此取消了target和factory方法，取消了loading加载状态。
- * 2. 添加了参数区分，现在，允许通过参数来划分不同的Promise Function，参数通过`lodash.isEqual`来进行区分。
- * 3. 添加了 强制执行方法exceed() 和 等待执行方法wait()
- * 4. 同步方法为get()，如果值在之前初始化过，则返回对应的值，否则返回undefined，同步执行不再主动触发promise。
- * 5. send、request和refresh是同一个方法，定义它们是为了方便更好的语义化。
- */
 import isEqual from "lodash/isEqual";
 export class OnceInit<T, P extends Array<any> = []> {
   protected promiseFunction: (...param: P) => Promise<T>;
