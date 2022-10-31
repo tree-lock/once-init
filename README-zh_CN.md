@@ -57,6 +57,7 @@ oiFoo.init();
 只需要下面这一行：
 
 ```typescript
+// TODO: 当前会报TS错误，需要解决
 axios.get = oi(axios.get).refresh;
 ```
 
