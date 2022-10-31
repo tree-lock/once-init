@@ -6,7 +6,7 @@
  * 4. 同步方法为get()，如果值在之前初始化过，则返回对应的值，否则返回undefined，同步执行不再主动触发promise。
  * 5. send、request和refresh是同一个方法，定义它们是为了方便更好的语义化。
  */
-import { isEqual } from "lodash";
+import isEqual from "lodash/isEqual";
 export class OnceInit<T, P extends Array<any> = []> {
   protected promiseFunction: (...param: P) => Promise<T>;
   protected processedParams: P[] = [];
