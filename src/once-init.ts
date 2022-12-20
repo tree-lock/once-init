@@ -1,4 +1,3 @@
-
 import isEqual from 'lodash/isEqual';
 export class OnceInit<T, P extends Array<any> = []> {
   protected promiseFunction: (...param: P) => Promise<T>;
