@@ -41,7 +41,7 @@ export class OnceInit<T, P extends Array<any> = []> {
   };
 
   /** 刷新，如果存在正在执行的对应参数的Promise，则不会创建新的Promise */
-  public refresh = (...param: P): Promise<T> => {
+ refresh = (...param: P): Promise<T> => {
     // 查看是否在已执行过的参数中
     const index = this.processedParams.findIndex(item => isEqual(item, param));
     if (index === -1) {
