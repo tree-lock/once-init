@@ -346,18 +346,18 @@ describe("带参测试", () => {
 
 /** 由github用户 Banlangenn 提出的问题 */
 describe("测试执行顺序", () => {
-  /** 新建一个单独的promise函数用于测试 */
-  let val = 0;
-  const runPromise = () => {
-    return new Promise<number>((res) => {
-      setTimeout(() => {
-        res(++val);
-      }, 10);
-    });
-  };
-  /** 包装promise */
-  const fn = oi(runPromise);
   describe("init", () => {
+    /** 新建一个单独的promise函数用于测试 */
+    let val = 0;
+    const runPromise = () => {
+      return new Promise<number>((res) => {
+        setTimeout(() => {
+          res(++val);
+        }, 10);
+      });
+    };
+    /** 包装promise */
+    const fn = oi(runPromise);
     const fnInit = fn.init;
     const invokedFn = jest.fn();
     test("invoke function", async () => {
@@ -395,6 +395,17 @@ describe("测试执行顺序", () => {
   });
 
   describe("refresh", () => {
+    /** 新建一个单独的promise函数用于测试 */
+    let val = 0;
+    const runPromise = () => {
+      return new Promise<number>((res) => {
+        setTimeout(() => {
+          res(++val);
+        }, 10);
+      });
+    };
+    /** 包装promise */
+    const fn = oi(runPromise);
     const fnRefresh = fn.refresh;
     const invokedFn = jest.fn();
     test("invoke function", async () => {
@@ -432,6 +443,17 @@ describe("测试执行顺序", () => {
   });
 
   describe("exceed", () => {
+    /** 新建一个单独的promise函数用于测试 */
+    let val = 0;
+    const runPromise = () => {
+      return new Promise<number>((res) => {
+        setTimeout(() => {
+          res(++val);
+        }, 10);
+      });
+    };
+    /** 包装promise */
+    const fn = oi(runPromise);
     const fnExceed = fn.exceed;
     const invokedFn = jest.fn();
     test("invoke function", async () => {
