@@ -395,32 +395,32 @@ describe("测试执行顺序", () => {
   });
 
   describe("refresh", () => {
-    const fnInit = fn.refresh;
+    const fnRefresh = fn.refresh;
     const invokedFn = jest.fn();
     test("invoke function", async () => {
       let inc = 0;
-      fnInit().then(() => {
+      fnRefresh().then(() => {
         expect(invokedFn).toBeCalledTimes(0);
         invokedFn();
         inc++;
         expect(inc).toBe(1);
         expect(invokedFn).toBeCalledTimes(1);
       });
-      fnInit().then(() => {
+      fnRefresh().then(() => {
         expect(invokedFn).toBeCalledTimes(1);
         invokedFn();
         inc++;
         expect(inc).toBe(2);
         expect(invokedFn).toBeCalledTimes(2);
       });
-      fnInit().then(() => {
+      fnRefresh().then(() => {
         expect(invokedFn).toBeCalledTimes(2);
         invokedFn();
         inc++;
         expect(inc).toBe(3);
         expect(invokedFn).toBeCalledTimes(3);
       });
-      fnInit().then(() => {
+      fnRefresh().then(() => {
         expect(invokedFn).toBeCalledTimes(3);
         invokedFn();
         inc++;
@@ -432,32 +432,32 @@ describe("测试执行顺序", () => {
   });
 
   describe("exceed", () => {
-    const fnInit = fn.exceed;
+    const fnExceed = fn.exceed;
     const invokedFn = jest.fn();
     test("invoke function", async () => {
       let inc = 0;
-      fnInit().then(() => {
+      fnExceed().then(() => {
         expect(invokedFn).toBeCalledTimes(0);
         invokedFn();
         inc++;
         expect(inc).toBe(1);
         expect(invokedFn).toBeCalledTimes(1);
       });
-      fnInit().then(() => {
+      fnExceed().then(() => {
         expect(invokedFn).toBeCalledTimes(1);
         invokedFn();
         inc++;
         expect(inc).toBe(2);
         expect(invokedFn).toBeCalledTimes(2);
       });
-      fnInit().then(() => {
+      fnExceed().then(() => {
         expect(invokedFn).toBeCalledTimes(2);
         invokedFn();
         inc++;
         expect(inc).toBe(3);
         expect(invokedFn).toBeCalledTimes(3);
       });
-      fnInit().then(() => {
+      fnExceed().then(() => {
         expect(invokedFn).toBeCalledTimes(3);
         invokedFn();
         inc++;
