@@ -47,13 +47,16 @@
     "webpack-cli": "^4.10.0"
   },
   "lint-staged": {
-    "src/**/*.vue": [
-      "prettier --write --ignore-unknown"
-    ],
     "src/**/*.js": [
       "prettier --write --ignore-unknown"
     ],
     "src/**/*.ts": [
+      "prettier --write --ignore-unknown"
+    ],
+    "test/**/*.js": [
+      "prettier --write --ignore-unknown"
+    ],
+    "test/**/*.ts": [
       "prettier --write --ignore-unknown"
     ],
     "*.{js,ts,css,md}": "prettier --write --ignore-unknown"
