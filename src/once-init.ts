@@ -1,4 +1,4 @@
-import isEqual from 'lodash/isEqual';
+import isEqual from "lodash/isEqual";
 export class OnceInit<T, P extends Array<any> = []> {
   protected promiseFunction: (...param: P) => Promise<T>;
   protected processedParams: P[] = [];
@@ -15,7 +15,9 @@ export class OnceInit<T, P extends Array<any> = []> {
   /** 初始化，returnValueMap中对应的参数存在变量，则不会再请求 */
   init = (...param: P): Promise<T> => {
     // 查看是否在已执行过的参数中
-    const index = this.processedParams.findIndex(item => isEqual(item, param));
+    const index = this.processedParams.findIndex((item) =>
+      isEqual(item, param)
+    );
     if (index === -1) {
       // 如果不在已执行参数中，将参数推入，并且执行
       const index = this.processedParams.length;
@@ -24,7 +26,7 @@ export class OnceInit<T, P extends Array<any> = []> {
       const promise = this.promiseFunction(...param);
       // 将promise置入哈希表，设定该参数的promise正在执行
       this.promiseMap.set(index, promise);
-      promise.then(res => {
+      promise.then((res) => {
         this.returnValueMap.set(index, res);
         this.promiseMap.set(index, null);
       });
@@ -41,9 +43,11 @@ export class OnceInit<T, P extends Array<any> = []> {
   };
 
   /** 刷新，如果存在正在执行的对应参数的Promise，则不会创建新的Promise */
- refresh = (...param: P): Promise<T> => {
+  refresh = (...param: P): Promise<T> => {
     // 查看是否在已执行过的参数中
-    const index = this.processedParams.findIndex(item => isEqual(item, param));
+    const index = this.processedParams.findIndex((item) =>
+      isEqual(item, param)
+    );
     if (index === -1) {
       // 如果不在已执行参数中，说明连第一次执行都还没有进行，可以使用init进行返回值
       return this.init(...param);
@@ -58,7 +62,7 @@ export class OnceInit<T, P extends Array<any> = []> {
       promise = this.promiseFunction(...param);
       // 将promise置入哈希表，设定该参数的promise正在执行
       this.promiseMap.set(index, promise);
-      promise.then(res => {
+      promise.then((res) => {
         this.returnValueMap.set(index, res);
         this.promiseMap.set(index, null);
       });
@@ -71,7 +75,9 @@ export class OnceInit<T, P extends Array<any> = []> {
 
   /** 同步获取值，如果参数存在返回值，则返回，否则返回undefined */
   get = (...param: P): T | undefined => {
-    const index = this.processedParams.findIndex(item => isEqual(item, param));
+    const index = this.processedParams.findIndex((item) =>
+      isEqual(item, param)
+    );
     return this.returnValueMap.get(index);
   };
 
@@ -85,7 +91,9 @@ export class OnceInit<T, P extends Array<any> = []> {
    */
   exceed = (...param: P): Promise<T> => {
     // 查看是否在已执行过的参数中
-    const index = this.processedParams.findIndex(item => isEqual(item, param));
+    const index = this.processedParams.findIndex((item) =>
+      isEqual(item, param)
+    );
     if (index === -1) {
       // 如果不在已执行参数中，说明连第一次执行都还没有进行，可以使用init进行返回值
       return this.init(...param);
@@ -96,7 +104,7 @@ export class OnceInit<T, P extends Array<any> = []> {
       const promise = this.promiseFunction(...param);
       // 将promise置入哈希表，设定该参数的promise正在执行
       this.promiseMap.set(index, promise);
-      promise.then(res => {
+      promise.then((res) => {
         this.returnValueMap.set(index, res);
         this.promiseMap.set(index, null);
       });
@@ -120,7 +128,9 @@ export class OnceInit<T, P extends Array<any> = []> {
    * @param param
    */
   wait = async (...param: P): Promise<void> => {
-    const index = this.processedParams.findIndex(item => isEqual(item, param));
+    const index = this.processedParams.findIndex((item) =>
+      isEqual(item, param)
+    );
     const promise = this.promiseMap.get(index);
     if (!promise) {
       return;
