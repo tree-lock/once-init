@@ -57,7 +57,7 @@ oiFoo.init();
 只需要下面这一行：
 
 ```typescript
-axios.get = oi(axios.get).refresh;
+axios.get = oi(axios.get).refresh as typeof axios.get;
 ```
 
 ### 用例
