@@ -490,3 +490,48 @@ describe("测试执行顺序", () => {
     });
   });
 });
+
+describe("Promise", () => {
+  /** 新建一个单独的promise函数用于测试 */
+  let val = 0;
+  const runPromise = () => {
+    return new Promise<number>((res) => {
+      setTimeout(() => {
+        res(++val);
+      }, 10);
+    });
+  };
+  /** 包装promise */
+  test("init", async () => {
+    const fn = oi(runPromise);
+    const firstCall = fn.init();
+    expect(firstCall.then).toBeDefined();
+    expect(firstCall.finally).toBeDefined();
+    await firstCall;
+    const secondCall = fn.init();
+    expect(secondCall.then).toBeDefined();
+    expect(secondCall.finally).toBeDefined();
+  });
+
+  test("refersh", async () => {
+    const fn = oi(runPromise);
+    const firstCall = fn.refresh();
+    expect(firstCall.then).toBeDefined();
+    expect(firstCall.finally).toBeDefined();
+    await firstCall;
+    const secondCall = fn.refresh();
+    expect(secondCall.then).toBeDefined();
+    expect(secondCall.finally).toBeDefined();
+  });
+
+  test("exceed", async () => {
+    const fn = oi(runPromise);
+    const firstCall = fn.exceed();
+    expect(firstCall.then).toBeDefined();
+    expect(firstCall.finally).toBeDefined();
+    await firstCall;
+    const secondCall = fn.exceed();
+    expect(secondCall.then).toBeDefined();
+    expect(secondCall.finally).toBeDefined();
+  });
+});

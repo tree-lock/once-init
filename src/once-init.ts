@@ -35,7 +35,9 @@ export class OnceInit<T, P extends Array<any> = []> {
       // 如果在已执行参数中，可能已经执行完毕，可能正在执行中
       // 如果执行完毕，在 returnValueMap 中能够找到返回值
       if (this.returnValueMap.has(index)) {
-        return this.returnValueMap.get(index) as Promise<T>;
+        return new Promise<T>((resolve) => {
+          resolve(this.returnValueMap.get(index) as T);
+        });
       }
       // 否则，必然还在执行中
       return this.promiseMap.get(index) as Promise<T>;
