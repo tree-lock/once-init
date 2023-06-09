@@ -1,4 +1,6 @@
 import oi, { OnceInit } from "../src/index";
+import { describe, expect, it, beforeEach, afterEach, vi } from "vitest";
+
 /** val每增加1表示执行一次 */
 let val: number = 0;
 const runPromise = () => {
@@ -10,11 +12,11 @@ const runPromise = () => {
 };
 
 describe("初始化", () => {
-  test("defined", () => {
+  it("defined", () => {
     expect(oi).toBeDefined();
     expect(OnceInit).toBeDefined();
   });
-  test("测试Promise", async () => {
+  it("测试Promise", async () => {
     expect(await runPromise()).toBe(val);
     expect(await runPromise()).toBe(val);
   });
@@ -32,7 +34,7 @@ describe("测试once-init", () => {
   });
 
   describe("单独测试", () => {
-    test("normal", async () => {
+    it("normal", async () => {
       const res = await Promise.all([
         runPromise(),
         runPromise(),
@@ -45,7 +47,7 @@ describe("测试once-init", () => {
       expect(res[3]).toBe(4);
     });
 
-    test("init", async () => {
+    it("init", async () => {
       const res = await Promise.all([
         oiPromise.init(),
         oiPromise.init(),
@@ -68,7 +70,7 @@ describe("测试once-init", () => {
       expect(res1[2]).toBe(res1[3]);
     });
 
-    test("const init = oiPromise.init", async () => {
+    it("const init = oiPromise.init", async () => {
       const init = oiPromise.init;
       const res = await Promise.all([init(), init(), init(), init()]);
       expect(res[0]).toBe(1);
@@ -82,7 +84,7 @@ describe("测试once-init", () => {
       expect(res1[2]).toBe(res1[3]);
     });
 
-    test("refresh", async () => {
+    it("refresh", async () => {
       const res = await Promise.all([
         oiPromise.refresh(),
         oiPromise.refresh(),
@@ -105,7 +107,7 @@ describe("测试once-init", () => {
       expect(res1[2]).toBe(res1[3]);
     });
 
-    test("const refresh = oiPromise.refresh", async () => {
+    it("const refresh = oiPromise.refresh", async () => {
       const refresh = oiPromise.refresh;
       const res = await Promise.all([
         refresh(),
@@ -129,7 +131,7 @@ describe("测试once-init", () => {
       expect(res1[2]).toBe(res1[3]);
     });
 
-    test("get", async () => {
+    it("get", async () => {
       const res = await Promise.all([
         oiPromise.get(),
         oiPromise.get(),
@@ -142,7 +144,7 @@ describe("测试once-init", () => {
       expect(res[2]).toBe(res[3]);
     });
 
-    test("exceed", async () => {
+    it("exceed", async () => {
       const res = await Promise.all([
         oiPromise.exceed(),
         oiPromise.exceed(),
@@ -166,7 +168,7 @@ describe("测试once-init", () => {
       expect(res1[3]).toBe(8);
     });
 
-    test("execute", async () => {
+    it("execute", async () => {
       const initPromiseRes = await oiPromise.init();
       const res = await Promise.all([
         oiPromise.execute(),
@@ -193,7 +195,7 @@ describe("测试once-init", () => {
     });
 
     describe("wait", () => {
-      test("wait", async () => {
+      it("wait", async () => {
         expect(await oiPromise.wait()).toBeUndefined();
         oiPromise.init();
         expect(val).toBe(0);
@@ -205,7 +207,7 @@ describe("测试once-init", () => {
 
   describe("复合测试", () => {
     describe("init + refresh", () => {
-      test("init => refresh", async () => {
+      it("init => refresh", async () => {
         const res = await Promise.all([
           oiPromise.init(),
           oiPromise.refresh(),
@@ -216,7 +218,7 @@ describe("测试once-init", () => {
         expect(res[0]).toBe(res[1]);
       });
 
-      test("refresh => init", async () => {
+      it("refresh => init", async () => {
         const res = await Promise.all([
           oiPromise.refresh(),
           oiPromise.init(),
@@ -227,7 +229,7 @@ describe("测试once-init", () => {
         expect(res[0]).toBe(res[1]);
       });
 
-      test("setTimeout-refresh => init", async () => {
+      it("setTimeout-refresh => init", async () => {
         setTimeout(async () => {
           const res = await oiPromise.refresh();
           expect(res).toBe(1);
@@ -236,7 +238,7 @@ describe("测试once-init", () => {
         expect(res).toBe(1);
       });
 
-      test("setTimeout-init => refresh", async () => {
+      it("setTimeout-init => refresh", async () => {
         setTimeout(async () => {
           const res = await oiPromise.init();
           expect(res).toBe(1);
@@ -247,7 +249,7 @@ describe("测试once-init", () => {
     });
 
     describe("init + get", () => {
-      test("init => get", async () => {
+      it("init => get", async () => {
         const res1 = oiPromise.get();
         expect(res1).toBeUndefined();
         const res2 = await oiPromise.init();
@@ -258,7 +260,7 @@ describe("测试once-init", () => {
     });
 
     describe("init + refresh + exceed", () => {
-      test("refresh => exceed | exceed => refresh + init", async () => {
+      it("refresh => exceed | exceed => refresh + init", async () => {
         const res1 = await Promise.all([
           oiPromise.refresh(),
           oiPromise.exceed(),
@@ -298,7 +300,7 @@ describe("测试once-init", () => {
     });
 
     describe("init + execute + refresh", () => {
-      test("init => execute => init => refresh", async () => {
+      it("init => execute => init => refresh", async () => {
         const res1 = await oiPromise.init(); // 50秒后，返回 1
         expect(res1).toBe(1);
         const res2 = await oiPromise.execute(); // 50秒后，返回 2
@@ -334,7 +336,7 @@ describe("带参测试", () => {
     res2 = 0;
   });
   describe("init + refresh", () => {
-    test("init => refresh", async () => {
+    it("init => refresh", async () => {
       expect(await oiPromise.init("-")).toBe(-1);
       expect(await oiPromise.refresh("-")).toBe(-2);
       expect(await oiPromise.refresh("-")).toBe(-3);
@@ -359,8 +361,8 @@ describe("测试执行顺序", () => {
     /** 包装promise */
     const fn = oi(runPromise);
     const fnInit = fn.init;
-    const invokedFn = jest.fn();
-    test("invoke function", async () => {
+    const invokedFn = vi.fn();
+    it("invoke function", async () => {
       let inc = 0;
       fnInit().then(() => {
         expect(invokedFn).toBeCalledTimes(0);
@@ -407,8 +409,8 @@ describe("测试执行顺序", () => {
     /** 包装promise */
     const fn = oi(runPromise);
     const fnRefresh = fn.refresh;
-    const invokedFn = jest.fn();
-    test("invoke function", async () => {
+    const invokedFn = vi.fn();
+    it("invoke function", async () => {
       let inc = 0;
       fnRefresh().then(() => {
         expect(invokedFn).toBeCalledTimes(0);
@@ -455,8 +457,8 @@ describe("测试执行顺序", () => {
     /** 包装promise */
     const fn = oi(runPromise);
     const fnExceed = fn.exceed;
-    const invokedFn = jest.fn();
-    test("invoke function", async () => {
+    const invokedFn = vi.fn();
+    it("invoke function", async () => {
       let inc = 0;
       fnExceed().then(() => {
         expect(invokedFn).toBeCalledTimes(0);
@@ -502,7 +504,7 @@ describe("Promise", () => {
     });
   };
   /** 包装promise */
-  test("init", async () => {
+  it("init", async () => {
     const fn = oi(runPromise);
     const firstCall = fn.init();
     expect(firstCall.then).toBeDefined();
@@ -513,7 +515,7 @@ describe("Promise", () => {
     expect(secondCall.finally).toBeDefined();
   });
 
-  test("refersh", async () => {
+  it("refersh", async () => {
     const fn = oi(runPromise);
     const firstCall = fn.refresh();
     expect(firstCall.then).toBeDefined();
@@ -524,7 +526,7 @@ describe("Promise", () => {
     expect(secondCall.finally).toBeDefined();
   });
 
-  test("exceed", async () => {
+  it("exceed", async () => {
     const fn = oi(runPromise);
     const firstCall = fn.exceed();
     expect(firstCall.then).toBeDefined();

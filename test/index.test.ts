@@ -1,4 +1,5 @@
 import { packagedByRefresh, version } from "../src/index";
+import { describe, expect, it, beforeEach } from "vitest";
 
 describe("test module", () => {
   it("defined", () => {
