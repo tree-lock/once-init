@@ -28,6 +28,13 @@
 npm install once-init
 ```
 
+```html
+<script src="/index.js"></script>
+<script>
+  OnceInit.oi(async () => { ... });
+</script>
+```
+
 ## 简介
 
 `once-init` 的核心思想是缓存和执行队列；

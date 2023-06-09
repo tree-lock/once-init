@@ -4,16 +4,18 @@ export * from "./once-init";
 
 export const version = config.version;
 
-export default function oi<T, P extends Array<any>>(
+export function oi<T, P extends Array<any>>(
   promise: (...param: P) => Promise<T>
 ): OnceInit<T, P>;
 
-export default function oi<T, P extends Array<any> = []>(...args: any[]) {
+export function oi<T, P extends Array<any> = []>(...args: any[]) {
   if (args[0] instanceof Function) {
     const promise = args[0] as (...param: P) => Promise<T>;
     return new (class extends OnceInit<T, P> {})(promise);
   }
 }
+
+export default oi;
 
 /**
  * 把对象的所有的Function都修改成Async Function

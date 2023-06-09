@@ -1,4 +1,4 @@
 /** 请勿手动修改本文件，本文件通过命令行自动生成 */
 export default {
-  "version": "1.3.0-beta.0"
+  "version": "1.3.0"
 }

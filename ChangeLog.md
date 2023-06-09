@@ -6,6 +6,11 @@
 4. 同步方法为 get()，如果值在之前初始化过，则返回对应的值，否则返回 undefined，同步执行不再主动触发 promise。
 5. send、request 和 refresh 是同一个方法，定义它们是为了方便更好的语义化。
 
+## 1.3.0
+
+1. 可以使用`script`导入`js`文件的方式访问`OnceInit`来调用；
+2. 允许`import { oi } from 'once-init'`进行导入；
+
 ## 1.2.0
 
 1. 解决了`refresh`执行顺序混乱的 bug；([#4](https://github.com/darkXmo/once-init/issues/4))
