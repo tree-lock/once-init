@@ -8,7 +8,7 @@
 
 ## 1.3.0
 
-1. 可以使用`script`导入`js`文件的方式访问`OnceInit`来调用；
+1. 可以使用`script`导入`js`文件的方式访问`OnceInit`来调用；([#5](https://github.com/darkXmo/once-init/issues/5))
 2. 允许`import { oi } from 'once-init'`进行导入；
 
 ## 1.2.0
