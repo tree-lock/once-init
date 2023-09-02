@@ -312,6 +312,49 @@ describe("测试once-init", () => {
       });
     });
   });
+
+  describe("clear", () => {
+    it("should rerun init", async () => {
+      const res1 = await oiPromise.init();
+      expect(res1).toBe(1);
+      oiPromise.clear();
+      const res2 = await oiPromise.init();
+      expect(res2).toBe(2);
+    });
+
+    it("should create new promise with init", async () => {
+      const promise1 = oiPromise.init();
+      oiPromise.clear();
+      const promise2 = oiPromise.init();
+      expect(await promise1).not.toBe(await promise2);
+    });
+
+    it("should create new promise with refresh", async () => {
+      const promise1 = oiPromise.refresh();
+      oiPromise.clear();
+      const promise2 = oiPromise.refresh();
+      expect(await promise1).not.toBe(await promise2);
+    });
+
+    describe("get", () => {
+      it("should return params", () => {
+        expect(oiPromise.promiseFunction).toBe(runPromise);
+        expect(oiPromise.processedParams.length).toBe(0);
+        expect(oiPromise.promiseList.length).toBe(0);
+        expect(oiPromise.returnValueList.length).toBe(0);
+      });
+
+      it("should get processed info", async () => {
+        const promise1 = oiPromise.init();
+        expect(oiPromise.promiseFunction).toBe(runPromise);
+        expect(oiPromise.processedParams.length).toBe(1);
+        expect(oiPromise.promiseList.length).toBe(1);
+        expect(oiPromise.returnValueList.length).toBe(0);
+        await promise1;
+        expect(oiPromise.returnValueList.length).toBe(1);
+      });
+    });
+  });
 });
 
 describe("带参测试", () => {
@@ -342,6 +385,18 @@ describe("带参测试", () => {
       expect(await oiPromise.refresh("-")).toBe(-3);
       expect(await oiPromise.refresh("+")).toBe(1);
       expect(await oiPromise.init("-")).toBe(-3);
+    });
+  });
+
+  describe("clear", () => {
+    it("clear with params", async () => {
+      expect(await oiPromise.init("-")).toBe(-1);
+      expect(await oiPromise.refresh("-")).toBe(-2);
+      expect(await oiPromise.refresh("-")).toBe(-3);
+      expect(await oiPromise.refresh("+")).toBe(1);
+      oiPromise.clear("-");
+      expect(await oiPromise.init("-")).toBe(-4);
+      expect(await oiPromise.init("+")).toBe(1);
     });
   });
 });
@@ -571,5 +626,3 @@ describe("测试错误处理", () => {
     expect(refreshAns).toBe(cnt);
   });
 });
-
-describe("clear", async () => {});

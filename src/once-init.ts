@@ -16,9 +16,9 @@ export class OnceInit<T, P extends Array<any> = []> {
       this._returnValueList.length = 0;
       this._processedParams.length = 0;
     } else {
-      const index = this._processedParams.findIndex((item) => {
-        isEqual(item, params);
-      });
+      const index = this._processedParams.findIndex((item) =>
+        isEqual(item, params)
+      );
       this._promiseList.splice(index, 1);
       this._returnValueList.splice(index, 1);
       this._processedParams.splice(index, 1);
