@@ -571,3 +571,5 @@ describe("测试错误处理", () => {
     expect(refreshAns).toBe(cnt);
   });
 });
+
+describe("clear", async () => {});

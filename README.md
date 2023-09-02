@@ -285,6 +285,14 @@ await Promise.all([
 ]); // 50秒后，返回 [5, 5, 6, 6, 4];
 ```
 
+### `OnceInit.clear`
+
+`clear`可以清空缓存，如果你担心内存泄漏的问题，你可以在适当的时候调用它。
+
+```typescript
+
+```
+
 ![Alt](https://repobeats.axiom.co/api/embed/3e2a2caafe9c373cbe8fa4a16c3fb1b3d2e20fdf.svg "Repobeats analytics image")
 
 ## error handle
@@ -300,7 +308,3 @@ async function incrementPromise() {
   return cnt;
 }
 ```
-
-## Help
-
-1. once-init 不处理也不打算处理缓存垃圾，这意味着它可能导致内存泄漏。然而，这在绝大多数情况下并不会造成问题，除非你的函数有
