@@ -545,7 +545,6 @@ describe("测试错误处理", () => {
   });
   /** Thanks to @richex-cn(https://github.com/richex-cn) */
   async function incrementPromise() {
-    // throw first time
     cnt++;
     if (cnt < 3) throw new Error("cnt " + cnt.toString());
     return cnt;

@@ -2,14 +2,27 @@ import isEqual from "lodash/isEqual";
 export class OnceInit<T, P extends Array<any> = []> {
   protected promiseFunction: (...param: P) => Promise<T>;
   protected processedParams: P[] = [];
-  protected returnValueMap: Map<number, T> = new Map<number, T>();
-  protected promiseMap: Map<number, Promise<T> | null> = new Map<
-    number,
-    Promise<T>
-  >();
+  protected returnValueList: Array<T> = [];
+  protected promiseList: Array<Promise<T> | null> = [];
 
   constructor(initPromise: (...param: P) => Promise<T>) {
     this.promiseFunction = initPromise;
+  }
+
+  /** 清空某个参数的缓存 */
+  clear(...params: P | []) {
+    if (params.length === 0) {
+      this.promiseList.length = 0;
+      this.returnValueList.length = 0;
+      this.processedParams.length = 0;
+    } else {
+      const index = this.processedParams.findIndex((item) => {
+        isEqual(item, params);
+      });
+      this.promiseList.splice(index, 1);
+      this.returnValueList.splice(index, 1);
+      this.processedParams.splice(index, 1);
+    }
   }
 
   /** 初始化，returnValueMap中对应的参数存在变量，则不会再请求 */
@@ -25,26 +38,26 @@ export class OnceInit<T, P extends Array<any> = []> {
       // 创建一个Promise
       const promise = this.promiseFunction(...param);
       // 将promise置入哈希表，设定该参数的promise正在执行
-      this.promiseMap.set(index, promise);
+      this.promiseList[index] = promise;
       promise
         .then((res) => {
-          this.returnValueMap.set(index, res);
-          this.promiseMap.set(index, null);
+          this.returnValueList[index] = res;
+          this.promiseList[index] = null;
         })
         .catch(() => {
-          this.promiseMap.set(index, null);
+          this.promiseList[index] = null;
         });
       return promise;
     } else {
       // 如果在已执行参数中，可能已经执行完毕，可能正在执行中
       // 如果执行完毕，在 returnValueMap 中能够找到返回值
-      if (this.returnValueMap.has(index)) {
+      if (this.returnValueList.length > index) {
         return new Promise<T>((resolve) => {
-          resolve(this.returnValueMap.get(index) as T);
+          resolve(this.returnValueList[index]);
         });
       }
       // 否则，必然还在执行中
-      return this.promiseMap.get(index) as Promise<T>;
+      return this.promiseList[index] as Promise<T>;
     }
   };
 
@@ -60,21 +73,21 @@ export class OnceInit<T, P extends Array<any> = []> {
     } else {
       // 在已执行参数中
       // 如果正在执行，则返回正在执行的返回值即可
-      let promise = this.promiseMap.get(index);
+      let promise = this.promiseList.at(index);
       if (promise) {
         return promise;
       }
       // 此时处于未执行状态，创建一个promise
       promise = this.promiseFunction(...param);
       // 将promise置入哈希表，设定该参数的promise正在执行
-      this.promiseMap.set(index, promise);
+      this.promiseList[index] = promise;
       promise
         .then((res) => {
-          this.returnValueMap.set(index, res);
-          this.promiseMap.set(index, null);
+          this.returnValueList[index] = res;
+          this.promiseList[index] = null;
         })
         .catch(() => {
-          this.promiseMap.set(index, null);
+          this.promiseList[index] = null;
         });
       return promise;
     }
@@ -88,7 +101,7 @@ export class OnceInit<T, P extends Array<any> = []> {
     const index = this.processedParams.findIndex((item) =>
       isEqual(item, param)
     );
-    return this.returnValueMap.get(index);
+    return this.returnValueList.at(index);
   };
 
   /**
@@ -113,14 +126,14 @@ export class OnceInit<T, P extends Array<any> = []> {
       // 如果先refresh再马上exceed，会创建两个不同的Promise，返回值也会不同
       const promise = this.promiseFunction(...param);
       // 将promise置入哈希表，设定该参数的promise正在执行
-      this.promiseMap.set(index, promise);
+      this.promiseList[index] = promise;
       promise
         .then((res) => {
-          this.returnValueMap.set(index, res);
-          this.promiseMap.set(index, null);
+          this.returnValueList[index] = res;
+          this.promiseList[index] = null;
         })
         .catch(() => {
-          this.promiseMap.set(index, null);
+          this.promiseList[index] = null;
         });
       return promise;
     }
@@ -145,7 +158,7 @@ export class OnceInit<T, P extends Array<any> = []> {
     const index = this.processedParams.findIndex((item) =>
       isEqual(item, param)
     );
-    const promise = this.promiseMap.get(index);
+    const promise = this.promiseList.at(index);
     if (!promise) {
       return;
     }

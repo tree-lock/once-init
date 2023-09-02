@@ -286,3 +286,21 @@ await Promise.all([
 ```
 
 ![Alt](https://repobeats.axiom.co/api/embed/3e2a2caafe9c373cbe8fa4a16c3fb1b3d2e20fdf.svg "Repobeats analytics image")
+
+## error handle
+
+如果封装的函数执行的时候 Throw 了一个 Error，则不会更新缓存。
+
+```typescript
+let cnt = 0;
+async function incrementPromise() {
+  cnt++;
+  // 该函数前两次执行将会抛出错误；
+  if (cnt < 3) throw new Error("cnt " + cnt.toString());
+  return cnt;
+}
+```
+
+## Help
+
+1. once-init 不处理也不打算处理缓存垃圾，这意味着它可能导致内存泄漏。然而，这在绝大多数情况下并不会造成问题，除非你的函数有
