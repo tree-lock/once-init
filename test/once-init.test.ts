@@ -537,3 +537,38 @@ describe("Promise", () => {
     expect(secondCall.finally).toBeDefined();
   });
 });
+
+describe("测试错误处理", () => {
+  let cnt = 0;
+  beforeEach(() => {
+    cnt = 0;
+  });
+  /** Thanks to @richex-cn(https://github.com/richex-cn) */
+  async function incrementPromise() {
+    // throw first time
+    cnt++;
+    if (cnt < 3) throw new Error("cnt " + cnt.toString());
+    return cnt;
+  }
+
+  it("should throw error", async () => {
+    const fn = oi(incrementPromise);
+    await expect(fn.init()).rejects.toThrow("cnt " + cnt.toString());
+  });
+
+  it("should refresh without error", async () => {
+    const fn = oi(incrementPromise);
+    await expect(fn.init()).rejects.toThrow("cnt " + cnt.toString());
+    await expect(fn.refresh()).rejects.toThrow("cnt " + cnt.toString());
+    const refreshAns = await fn.refresh();
+    expect(refreshAns).toBe(cnt);
+  });
+
+  it("should exceed without error", async () => {
+    const fn = oi(incrementPromise);
+    await expect(fn.exceed()).rejects.toThrow("cnt " + cnt.toString());
+    await expect(fn.exceed()).rejects.toThrow("cnt " + cnt.toString());
+    const refreshAns = await fn.exceed();
+    expect(refreshAns).toBe(cnt);
+  });
+});

@@ -26,10 +26,14 @@ export class OnceInit<T, P extends Array<any> = []> {
       const promise = this.promiseFunction(...param);
       // 将promise置入哈希表，设定该参数的promise正在执行
       this.promiseMap.set(index, promise);
-      promise.then((res) => {
-        this.returnValueMap.set(index, res);
-        this.promiseMap.set(index, null);
-      });
+      promise
+        .then((res) => {
+          this.returnValueMap.set(index, res);
+          this.promiseMap.set(index, null);
+        })
+        .catch(() => {
+          this.promiseMap.set(index, null);
+        });
       return promise;
     } else {
       // 如果在已执行参数中，可能已经执行完毕，可能正在执行中
@@ -64,10 +68,14 @@ export class OnceInit<T, P extends Array<any> = []> {
       promise = this.promiseFunction(...param);
       // 将promise置入哈希表，设定该参数的promise正在执行
       this.promiseMap.set(index, promise);
-      promise.then((res) => {
-        this.returnValueMap.set(index, res);
-        this.promiseMap.set(index, null);
-      });
+      promise
+        .then((res) => {
+          this.returnValueMap.set(index, res);
+          this.promiseMap.set(index, null);
+        })
+        .catch(() => {
+          this.promiseMap.set(index, null);
+        });
       return promise;
     }
   };
@@ -106,10 +114,14 @@ export class OnceInit<T, P extends Array<any> = []> {
       const promise = this.promiseFunction(...param);
       // 将promise置入哈希表，设定该参数的promise正在执行
       this.promiseMap.set(index, promise);
-      promise.then((res) => {
-        this.returnValueMap.set(index, res);
-        this.promiseMap.set(index, null);
-      });
+      promise
+        .then((res) => {
+          this.returnValueMap.set(index, res);
+          this.promiseMap.set(index, null);
+        })
+        .catch(() => {
+          this.promiseMap.set(index, null);
+        });
       return promise;
     }
   };
