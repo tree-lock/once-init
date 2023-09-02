@@ -6,6 +6,12 @@
 4. 同步方法为 get()，如果值在之前初始化过，则返回对应的值，否则返回 undefined，同步执行不再主动触发 promise。
 5. send、request 和 refresh 是同一个方法，定义它们是为了方便更好的语义化。
 
+## 1.4.1
+
+1. 添加了错误处理机制；
+2. 添加了`clear`方法用于清除缓存；
+3. 添加了一些`get`方法用于获取参数状态；
+
 ## 1.3.0
 
 1. 可以使用`script`导入`js`文件的方式访问`OnceInit`来调用；([#5](https://github.com/darkXmo/once-init/issues/5))

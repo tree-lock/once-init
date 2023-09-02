@@ -294,8 +294,6 @@ oiFoo.clear();
 oiFoo.clear(params);
 ```
 
-![Alt](https://repobeats.axiom.co/api/embed/3e2a2caafe9c373cbe8fa4a16c3fb1b3d2e20fdf.svg "Repobeats analytics image")
-
 ## error handle
 
 如果封装的函数执行的时候 Throw 了一个 Error，则不会更新缓存。
@@ -325,3 +323,5 @@ fn.get(); // 3
 await fn.init(); // Throw Error("cnt 1")
 await fn.init(); // Throw Error("cnt 2")
 ```
+
+![Alt](https://repobeats.axiom.co/api/embed/3e2a2caafe9c373cbe8fa4a16c3fb1b3d2e20fdf.svg "Repobeats analytics image")
