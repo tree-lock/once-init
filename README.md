@@ -4,7 +4,6 @@
   <a href="https://github.com/tree-lock/once-init/blob/main/LICENSE"><img src="https://img.shields.io/npm/l/once-init.svg?sanitize=true" alt="license"></a>
   <a href="https://www.npmjs.com/package/once-init"><img src="https://img.shields.io/npm/v/once-init.svg?sanitize=true" alt="npm version"></a>
   <a href="https://circleci.com/gh/tree-lock/once-init"><img src="https://circleci.com/gh/tree-lock/once-init.svg?style=shield" alt="circleci"></a>
-  <a href="https://app.codecov.io/gh/tree-lock/once-init"><img src="https://badgen.net/codecov/c/github/tree-lock/once-init" alt="test-coverage"></a>
   <a href="https://packagephobia.now.sh/result?p=once-init"><img src="https://badgen.net/packagephobia/install/once-init" alt="gzip size"></a>
   <a target="_blank" rel="noopener noreferrer nofollow" href="https://camo.githubusercontent.com/0f9fcc0ac1b8617ad4989364f60f78b2d6b32985ad6a508f215f14d8f897b8d3/68747470733a2f2f62616467656e2e6e65742f62616467652f547970655363726970742f7374726963742532302546302539462539322541412f626c7565" data-turbo-frame=""><img src="https://camo.githubusercontent.com/0f9fcc0ac1b8617ad4989364f60f78b2d6b32985ad6a508f215f14d8f897b8d3/68747470733a2f2f62616467656e2e6e65742f62616467652f547970655363726970742f7374726963742532302546302539462539322541412f626c7565" alt="badge" data-canonical-src="https://badgen.net/badge/TypeScript/strict%20%F0%9F%92%AA/blue" style="max-width: 100%;"></a>
 </p>
@@ -290,7 +289,9 @@ await Promise.all([
 `clear`可以清空缓存，如果你担心内存泄漏的问题，你可以在适当的时候调用它。
 
 ```typescript
-
+oiFoo.clear();
+// 你可以只删除某个参数的缓存
+oiFoo.clear(params);
 ```
 
 ![Alt](https://repobeats.axiom.co/api/embed/3e2a2caafe9c373cbe8fa4a16c3fb1b3d2e20fdf.svg "Repobeats analytics image")
@@ -304,7 +305,23 @@ let cnt = 0;
 async function incrementPromise() {
   cnt++;
   // 该函数前两次执行将会抛出错误；
-  if (cnt < 3) throw new Error("cnt " + cnt.toString());
+  if (cnt < 3 || cnt === 4) throw new Error("cnt " + cnt.toString());
   return cnt;
 }
+
+const fn = oi(incrementPromise);
+await fn.init(); // Throw Error("cnt 1")
+await fn.refresh(); // Throw Error("cnt 2")
+fn.get(); // undefined
+await fn.refresh(); // 3
+await fn.refresh(); // Throw Error("cnt 4")
+await fn.init(); // 3
+fn.get(); // 3
+```
+
+如果`init`失败，将不会创建缓存，下次执行`init`将第二次创建 Promise；
+
+```typescript
+await fn.init(); // Throw Error("cnt 1")
+await fn.init(); // Throw Error("cnt 2")
 ```

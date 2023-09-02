@@ -390,10 +390,14 @@ describe("带参测试", () => {
 
   describe("clear", () => {
     it("clear with params", async () => {
+      oiPromise.clear("+");
+
       expect(await oiPromise.init("-")).toBe(-1);
       expect(await oiPromise.refresh("-")).toBe(-2);
       expect(await oiPromise.refresh("-")).toBe(-3);
       expect(await oiPromise.refresh("+")).toBe(1);
+      oiPromise.clear("-");
+      // Nothing should happen if params is not in processedParams
       oiPromise.clear("-");
       expect(await oiPromise.init("-")).toBe(-4);
       expect(await oiPromise.init("+")).toBe(1);
@@ -601,28 +605,41 @@ describe("测试错误处理", () => {
   /** Thanks to @richex-cn(https://github.com/richex-cn) */
   async function incrementPromise() {
     cnt++;
-    if (cnt < 3) throw new Error("cnt " + cnt.toString());
+    if (cnt < 3 || cnt === 4) throw new Error("cnt " + cnt.toString());
     return cnt;
   }
 
   it("should throw error", async () => {
     const fn = oi(incrementPromise);
-    await expect(fn.init()).rejects.toThrow("cnt " + cnt.toString());
+    await expect(fn.init()).rejects.toThrow("cnt 1");
+    await expect(fn.init()).rejects.toThrow("cnt 2");
   });
 
   it("should refresh without error", async () => {
     const fn = oi(incrementPromise);
     await expect(fn.init()).rejects.toThrow("cnt " + cnt.toString());
     await expect(fn.refresh()).rejects.toThrow("cnt " + cnt.toString());
+    expect(fn.get()).toBeUndefined();
     const refreshAns = await fn.refresh();
     expect(refreshAns).toBe(cnt);
   });
 
   it("should exceed without error", async () => {
     const fn = oi(incrementPromise);
-    await expect(fn.exceed()).rejects.toThrow("cnt " + cnt.toString());
-    await expect(fn.exceed()).rejects.toThrow("cnt " + cnt.toString());
+    await expect(fn.exceed()).rejects.toThrow("cnt 1");
+    await expect(fn.exceed()).rejects.toThrow("cnt 2");
     const refreshAns = await fn.exceed();
     expect(refreshAns).toBe(cnt);
+    await expect(fn.exceed()).rejects.toThrow("cnt 4");
+  });
+
+  it("should get last response if error", async () => {
+    const fn = oi(incrementPromise);
+    await expect(fn.init()).rejects.toThrow("cnt " + cnt.toString());
+    await expect(fn.refresh()).rejects.toThrow("cnt " + cnt.toString());
+    const lastSucceedResponse = await fn.refresh();
+    await expect(fn.refresh()).rejects.toThrow("cnt " + cnt.toString());
+    expect(fn.get()).toBe(lastSucceedResponse);
+    expect(await fn.init()).toBe(lastSucceedResponse);
   });
 });
